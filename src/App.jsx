@@ -92,6 +92,14 @@ export default function App() {
     setCategory('All')
   }, [])
 
+  // Orbit icons live up in the hero, away from the grid they filter — so,
+  // unlike the category pills that already sit right above the grid, picking
+  // one also needs an explicit scroll down to where the result shows up.
+  const selectCategoryFromHero = useCallback((cat) => {
+    setCategory(cat)
+    document.getElementById('listings')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
+
   const submitLogin = useCallback((payload) => {
     setAuthed(true)
     setView('browse')
@@ -103,9 +111,14 @@ export default function App() {
   }, [])
 
   // Scroll to top whenever the view changes — feels like real navigation.
+  // `authed` is in the deps too: `view` is already 'browse' by the time the
+  // gate clears (it never changed while the gate was up), so without this,
+  // React bails out of re-running the effect and the freshly-authed user
+  // lands wherever the page happened to be scrolled — e.g. mid-form on
+  // mobile, where focus scrolls the page as each field is filled in.
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [view, selectedId])
+  }, [view, selectedId, authed])
 
   // Auto-dismiss the "posted" toast.
   useEffect(() => {
@@ -150,6 +163,7 @@ export default function App() {
               freeCount={freeCount}
               swapCount={swapCount}
               onPost={openPost}
+              onSelectCategory={selectCategoryFromHero}
             />
 
             <section

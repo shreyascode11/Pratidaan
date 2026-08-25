@@ -110,6 +110,63 @@ export function UserIcon(props) {
   )
 }
 
+export function BookIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 1 4 17.5Z" />
+      <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" />
+    </svg>
+  )
+}
+
+export function LaptopIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <rect x="4" y="4.5" width="16" height="11" rx="1.4" />
+      <path d="M2.5 19.5h19M9.5 19.5V16M14.5 19.5V16" />
+    </svg>
+  )
+}
+
+export function TicketIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M4 8.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1.3a1.7 1.7 0 0 0 0 3.4v1.3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1.3a1.7 1.7 0 0 0 0-3.4Z" />
+      <path d="M14 6.5v11" strokeDasharray="2.2 2.4" />
+    </svg>
+  )
+}
+
+export function NotebookIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <rect x="5" y="3.5" width="14" height="17" rx="1.6" />
+      <path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5" />
+    </svg>
+  )
+}
+
+export function GraduationCapIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="m12 4 9.5 4.5L12 13 2.5 8.5Z" />
+      <path d="M6.5 10.8v4.4c0 1.3 2.5 3.3 5.5 3.3s5.5-2 5.5-3.3v-4.4M21.5 8.5v6" />
+    </svg>
+  )
+}
+
+export function GiftIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <rect x="3.5" y="9" width="17" height="4" rx="1" />
+      <path d="M5 13h14v7.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1Z" />
+      <path d="M12 9v12.5" />
+      <path d="M12 9C9.5 9 8 7.6 8 6.1 8 4.9 8.9 4 10 4c1.6 0 2 2 2 5Z" />
+      <path d="M12 9c2.5 0 4-1.4 4-2.9C16 4.9 15.1 4 14 4c-1.6 0-2 2-2 5Z" />
+    </svg>
+  )
+}
+
 export function LogoMark(props) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>

@@ -249,6 +249,23 @@
     transform: scale(1);
   }
 
+  /* ---- Category orbit (hero) ---- */
+
+  /* A slow, gentle bob — each badge gets its own duration/delay via inline
+     style so six icons never move in sync ("breathing", not bouncing). */
+  .orbit-float {
+    animation: orbit-float 6s ease-in-out infinite;
+  }
+  @keyframes orbit-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-rise,
     .animate-pop,
@@ -260,7 +277,8 @@
     }
     .mascot-float,
     .mascot-glow,
-    .mascot-shadow {
+    .mascot-shadow,
+    .orbit-float {
       animation: none;
     }
   }
