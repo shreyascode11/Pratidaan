@@ -1,0 +1,261 @@
+export const CATEGORIES = [
+  'All',
+  'Textbooks',
+  'Electronics',
+  'Tickets',
+  'Notes',
+  'Skills',
+  'Freebies',
+]
+
+export const TYPES = ['Sell', 'Exchange', 'Giveaway']
+
+/** Build an Unsplash CDN url at a given width. */
+const img = (id, w = 900) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`
+
+/** ISO date `n` days before now — keeps seed listings looking fresh forever. */
+const daysAgo = (n) => new Date(Date.now() - n * 86400000).toISOString()
+
+export const SEED_ITEMS = [
+  {
+    id: 's1',
+    title: 'Organic Chemistry as a Second Language (3rd Ed.)',
+    category: 'Textbooks',
+    type: 'Sell',
+    price: 28,
+    condition: 'Good — some highlighting',
+    description:
+      'Klein’s first-semester survival guide. Saved me in CHEM 2410 — margins have my notes on mechanisms.',
+    details:
+      'Covers the full first-semester sequence: bonding, resonance, acids/bases, stereochemistry, and substitution/elimination. Binding is tight, no torn pages. Chapters 3–7 have highlighting and pencil notes in the margins (arguably a feature). Meet at the Science Library lobby or anywhere on the east side of campus.',
+    image: img('photo-1497633762265-9d179a990aa6'),
+    poster: 'Priya Raghunathan',
+    location: 'Science Library',
+    postedAt: daysAgo(1),
+  },
+  {
+    id: 's2',
+    title: 'Campbell Biology, 12th Edition — hardcover',
+    category: 'Textbooks',
+    type: 'Exchange',
+    price: null,
+    condition: 'Like new',
+    description:
+      'Barely opened (I switched majors in week 3). Looking to swap for a Psych 101 or Statistics text.',
+    details:
+      'The full 12th edition hardcover, ISBN 978-0135188743. No writing anywhere, spine barely creased. Happy to trade for Myers’ Psychology, any recent intro statistics text, or an organic chem book. Straight cash offers considered too, but a swap is what I’m really after.',
+    image: img('photo-1544716278-ca5e3f4abd8c'),
+    poster: 'Marcus Bell',
+    location: 'North Quad',
+    postedAt: daysAgo(2),
+  },
+  {
+    id: 's3',
+    title: 'Stewart, Calculus: Early Transcendentals (8th)',
+    category: 'Textbooks',
+    type: 'Sell',
+    price: 35,
+    condition: 'Fair — cover scuffed',
+    description:
+      'The standard MATH 1210/1220 brick. Cover is scuffed but every page is intact and readable.',
+    details:
+      'Used it for two semesters of the calc sequence. Cover corners are bumped and there is a coffee ring on the back, but the interior is clean apart from a few pencil marks in the series chapter. Comes with the loose-leaf solutions insert for odd-numbered problems.',
+    image: img('photo-1503676260728-1c00da094a0b'),
+    poster: 'Dana Whitfield',
+    location: 'Hillcrest Apartments',
+    postedAt: daysAgo(3),
+  },
+  {
+    id: 's4',
+    title: 'TI-84 Plus CE Graphing Calculator (teal)',
+    category: 'Electronics',
+    type: 'Sell',
+    price: 65,
+    condition: 'Excellent',
+    description:
+      'Charger and slide cover included. Cleared of all my programs, ready for your exams.',
+    details:
+      'Color-screen TI-84 Plus CE in teal. Holds a charge for weeks of normal use. Includes the USB charging cable and the original slide case. Memory has been fully reset, so it is exam-ready. Retails around $130 new — this one has two semesters on it.',
+    image: img('photo-1587145820266-a5951ee6f620'),
+    poster: 'Owen Fitzgerald',
+    location: 'Engineering Hall',
+    postedAt: daysAgo(1),
+  },
+  {
+    id: 's5',
+    title: 'Sony WH-1000XM4 Noise-Cancelling Headphones',
+    category: 'Electronics',
+    type: 'Sell',
+    price: 140,
+    condition: 'Very good',
+    description:
+      'Genuinely the reason I survived the third floor of the library. Case and cable included.',
+    details:
+      'Bought them two years ago, upgraded to the XM5 last month. Earpads are in good shape with no flaking. Battery still runs about 28 hours with ANC on. Comes with the hard case, USB-C cable, and the airplane adapter. Happy to demo them before you buy.',
+    image: img('photo-1585771724684-38269d6639fd'),
+    poster: 'Elias Moreau',
+    location: 'Student Union',
+    postedAt: daysAgo(4),
+  },
+  {
+    id: 's6',
+    title: 'Nikon D750 + 50mm f/1.8 lens',
+    category: 'Electronics',
+    type: 'Exchange',
+    price: null,
+    condition: 'Good — ~18k shutter count',
+    description:
+      'Full-frame body plus the nifty fifty. Want to trade toward a mirrorless setup or a good road bike.',
+    details:
+      'Shot my whole photojournalism minor on this. Shutter count is roughly 18,000, well under the rated life. Small scuff on the bottom plate, sensor is clean, no fungus in the lens. Includes two batteries, charger, and a 64GB card. Open to trades for a Sony a6000-series body, a Fuji X-T series, or a decent road bike.',
+    image: img('photo-1564466809058-bf4114d55352'),
+    poster: 'Sofia Klein',
+    location: 'Arts Building',
+    postedAt: daysAgo(5),
+  },
+  {
+    id: 's7',
+    title: 'Spring Fest — two floor tickets, Saturday',
+    category: 'Tickets',
+    type: 'Sell',
+    price: 45,
+    condition: 'Digital transfer',
+    description:
+      'Selling at face value, no markup. Group project deadline ate my weekend.',
+    details:
+      'Two general-admission floor tickets for Saturday night at the amphitheater. Face value was $45 each and that is exactly what I am asking — I would rather they get used than scalped. Transfer goes through the official app, takes about a minute, and I will do it while we are both on the call so nobody gets burned.',
+    image: img('photo-1533174072545-7a4b6ad7a6c3'),
+    poster: 'Jamal Osei',
+    location: 'Transfer via app',
+    postedAt: daysAgo(1),
+  },
+  {
+    id: 's8',
+    title: 'Homecoming vs. State — Section 118, row 12',
+    category: 'Tickets',
+    type: 'Exchange',
+    price: null,
+    condition: 'Digital transfer',
+    description:
+      'Two seats on the 40-yard line. Want to swap for two together in the student section.',
+    details:
+      'My family got these but my roommates are all in the student section and I would rather be with them. Section 118, row 12 — shaded by kickoff, great view of the field. Looking for an even swap for two seats anywhere in sections 25–32. Will not sell, only trading.',
+    image: img('photo-1522778119026-d647f0596c20'),
+    poster: 'Reese Calloway',
+    location: 'Memorial Stadium',
+    postedAt: daysAgo(2),
+  },
+  {
+    id: 's9',
+    title: 'CS 3100 Data Structures & Algorithms — full notes',
+    category: 'Notes',
+    type: 'Giveaway',
+    price: null,
+    condition: 'Digital — PDF',
+    description:
+      'Every lecture, typed and diagrammed. Heaps, tries, Dijkstra, DP. Free to whoever wants them.',
+    details:
+      'About 90 pages of typed notes covering the entire semester: asymptotic analysis, linked structures, trees and balanced trees, heaps, hash tables, tries, graph traversal, Dijkstra and Bellman-Ford, and the full dynamic programming unit. Includes my worked solutions to the two practice midterms and hand-drawn diagrams for every traversal. I got an A in the course and these notes are the only reason. Just message me and I will send the PDF — no strings.',
+    image: img('photo-1461749280684-dccba630e2f6'),
+    poster: 'Aditi Sharma',
+    location: 'Digital — emailed',
+    postedAt: daysAgo(2),
+  },
+  {
+    id: 's10',
+    title: 'MATH 2270 Linear Algebra — handwritten notes',
+    category: 'Notes',
+    type: 'Giveaway',
+    price: null,
+    condition: 'Digital — scanned',
+    description:
+      'Scanned, color-coded, and actually legible. Eigenvectors finally made sense after these.',
+    details:
+      'Full set of handwritten notes from Professor Ndiaye’s section, scanned at 300dpi. Color-coded by topic: row reduction in blue, vector spaces in green, eigen-everything in red. Includes the one-page determinant cheat sheet that half my study group ended up using for the final.',
+    image: img('photo-1509228468518-180dd4864904'),
+    poster: 'Tomás Rivera',
+    location: 'Digital — emailed',
+    postedAt: daysAgo(6),
+  },
+  {
+    id: 's11',
+    title: 'I’ll teach you guitar — one hour a week',
+    category: 'Skills',
+    type: 'Exchange',
+    price: null,
+    condition: 'Beginner-friendly',
+    description:
+      'Ten years playing. Trade me Spanish conversation practice or decent home cooking.',
+    details:
+      'I have been playing since I was twelve and have taught a handful of beginners. In an hour a week for a month you will get through open chords, basic strumming patterns, and two or three songs you actually want to play. I have a spare acoustic you can borrow for sessions. In exchange I am looking for Spanish conversation practice (I am somewhere around B1 and stuck there), or honestly just someone who can cook and is willing to teach me.',
+    image: img('photo-1510915361894-db8b60106cb1'),
+    poster: 'Noah Lindqvist',
+    location: 'Music Building practice rooms',
+    postedAt: daysAgo(3),
+  },
+  {
+    id: 's12',
+    title: 'Resume review + mock interview (SWE internships)',
+    category: 'Skills',
+    type: 'Exchange',
+    price: null,
+    condition: 'Free — trade welcome',
+    description:
+      'Interned at two big tech companies. I’ll do a real mock loop and give honest feedback.',
+    details:
+      'Two summers of SWE internships and I have sat in on intern screening at one of them. I will do a line-by-line pass on your resume, then a 45-minute mock interview with a real data structures problem and honest written feedback afterward — the kind nobody gives you in career services. Happy to do this for free, but if you want to trade, I could use help with statistics coursework or someone who knows Figma.',
+    image: img('photo-1517245386807-bb43f82c33c4'),
+    poster: 'Kevin Tran',
+    location: 'Library group rooms or Zoom',
+    postedAt: daysAgo(4),
+  },
+  {
+    id: 's13',
+    title: 'Free desk lamp — works perfectly',
+    category: 'Freebies',
+    type: 'Giveaway',
+    price: null,
+    condition: 'Used — fully working',
+    description:
+      'Matte grey adjustable arm. Bulb included. First person to come grab it gets it.',
+    details:
+      'Adjustable arm desk lamp in matte grey, takes a standard E26 bulb and one is already in it. Switch works, cord is intact, small scuff on the base. I am moving into a furnished place and have no room for it. Porch pickup at Hillcrest, no need to coordinate schedules — just message me and I will leave it out.',
+    image: img('photo-1507473885765-e6ed057f782c'),
+    poster: 'Maya Fontaine',
+    location: 'Hillcrest Apartments',
+    postedAt: daysAgo(1),
+  },
+  {
+    id: 's14',
+    title: 'Mini fridge, 3.2 cu ft — moving out Friday',
+    category: 'Freebies',
+    type: 'Giveaway',
+    price: null,
+    condition: 'Used — clean, cools well',
+    description:
+      'Mint green, freezer compartment, holds temperature fine. Gone Friday either way.',
+    details:
+      'Cleaned it out this morning — no smell, no rust, cools down within an hour of plugging in. Has a small freezer compartment that fits two trays. It is heavy enough that you will want a friend and a car. My lease ends Friday and it goes to the curb if nobody takes it, so please do.',
+    image: img('photo-1571175443880-49e1d25b2bc5'),
+    poster: 'Chris Adeyemi',
+    location: 'Rosewood Street',
+    postedAt: daysAgo(0),
+  },
+  {
+    id: 's15',
+    title: 'Navy backpack — barely used',
+    category: 'Freebies',
+    type: 'Giveaway',
+    price: null,
+    condition: 'Nearly new',
+    description:
+      'Got two as gifts. Padded laptop sleeve fits a 15", all zippers work.',
+    details:
+      'Water-resistant navy canvas with a padded laptop sleeve that fits a 15-inch machine comfortably. Two gifts, one person, so this one has never left my closet. Every zipper runs smoothly and there are no stains or frays. Would rather it go to someone who needs a bag than sit here another semester.',
+    image: img('photo-1553062407-98eeb64c6a62'),
+    poster: 'Leila Haddad',
+    location: 'Student Union',
+    postedAt: daysAgo(7),
+  },
+]

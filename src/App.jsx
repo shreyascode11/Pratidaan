@@ -1,0 +1,212 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import AmbientBackground from './components/AmbientBackground.jsx'
+import CategoryFilter from './components/CategoryFilter.jsx'
+import Footer from './components/Footer.jsx'
+import Hero from './components/Hero.jsx'
+import ItemDetail from './components/ItemDetail.jsx'
+import ItemGrid from './components/ItemGrid.jsx'
+import Navbar from './components/Navbar.jsx'
+import PostItemForm from './components/PostItemForm.jsx'
+import { CATEGORIES, SEED_ITEMS } from './data/seed.js'
+import { CheckIcon, CloseIcon } from './components/icons.jsx'
+
+export default function App() {
+  // ---- state -------------------------------------------------------------
+  const [items, setItems] = useState(SEED_ITEMS)
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('All')
+  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail'
+  const [selectedId, setSelectedId] = useState(null)
+  const [requested, setRequested] = useState([])
+  const [newIds, setNewIds] = useState(new Set())
+  const [toast, setToast] = useState(null)
+
+  // ---- derived -----------------------------------------------------------
+  const counts = useMemo(() => {
+    const map = { All: items.length }
+    for (const c of CATEGORIES) if (c !== 'All') map[c] = 0
+    for (const item of items) map[item.category] = (map[item.category] ?? 0) + 1
+    return map
+  }, [items])
+
+  const visibleItems = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return items.filter((item) => {
+      const matchesCategory = category === 'All' || item.category === category
+      const matchesQuery = q === '' || item.title.toLowerCase().includes(q)
+      return matchesCategory && matchesQuery
+    })
+  }, [items, query, category])
+
+  const selectedItem = useMemo(
+    () => items.find((i) => i.id === selectedId) ?? null,
+    [items, selectedId],
+  )
+
+  const freeCount = useMemo(
+    () => items.filter((i) => i.type === 'Giveaway').length,
+    [items],
+  )
+  const swapCount = useMemo(
+    () => items.filter((i) => i.type === 'Exchange').length,
+    [items],
+  )
+
+  // ---- actions -----------------------------------------------------------
+  const goBrowse = useCallback(() => {
+    setView('browse')
+    setSelectedId(null)
+  }, [])
+
+  const openDetail = useCallback((id) => {
+    setSelectedId(id)
+    setView('detail')
+  }, [])
+
+  const openPost = useCallback(() => setView('post'), [])
+
+  const addItem = useCallback((draft) => {
+    const item = {
+      ...draft,
+      id: `u${Date.now()}`,
+      postedAt: new Date().toISOString(),
+    }
+    setItems((prev) => [item, ...prev])
+    setNewIds((prev) => new Set(prev).add(item.id))
+    setQuery('')
+    setCategory('All')
+    setView('browse')
+    setToast(`“${item.title}” is live on the board.`)
+  }, [])
+
+  const requestItem = useCallback((id) => {
+    setRequested((prev) => (prev.includes(id) ? prev : [...prev, id]))
+  }, [])
+
+  const resetFilters = useCallback(() => {
+    setQuery('')
+    setCategory('All')
+  }, [])
+
+  // Scroll to top whenever the view changes — feels like real navigation.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [view, selectedId])
+
+  // Auto-dismiss the "posted" toast.
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(null), 5000)
+    return () => clearTimeout(t)
+  }, [toast])
+
+  // Escape backs out of detail / post views.
+  useEffect(() => {
+    if (view === 'browse') return
+    const onKey = (e) => e.key === 'Escape' && goBrowse()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [view, goBrowse])
+
+  // ---- render ------------------------------------------------------------
+  return (
+    <div className="flex min-h-screen flex-col">
+      <AmbientBackground />
+      <Navbar
+        query={query}
+        onQueryChange={(value) => {
+          setQuery(value)
+          if (view !== 'browse') goBrowse()
+        }}
+        onPost={openPost}
+        onHome={goBrowse}
+      />
+
+      <main className="flex-1">
+        {view === 'browse' && (
+          <>
+            <Hero
+              total={items.length}
+              freeCount={freeCount}
+              swapCount={swapCount}
+              onPost={openPost}
+            />
+
+            <section
+              id="listings"
+              className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8"
+            >
+              <CategoryFilter
+                active={category}
+                onChange={setCategory}
+                counts={counts}
+              />
+
+              <div className="mt-8 mb-6 flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">
+                  {category === 'All' ? 'All listings' : category}
+                  <span className="ml-2.5 text-sm font-bold text-ink-400 tabular-nums">
+                    {visibleItems.length}{' '}
+                    {visibleItems.length === 1 ? 'item' : 'items'}
+                  </span>
+                </h2>
+                {query && (
+                  <button
+                    onClick={resetFilters}
+                    className="text-sm font-bold text-mint-700 transition hover:text-mint-800"
+                  >
+                    Clear search
+                  </button>
+                )}
+              </div>
+
+              <ItemGrid
+                items={visibleItems}
+                onView={openDetail}
+                newIds={newIds}
+                query={query}
+                category={category}
+                onReset={resetFilters}
+              />
+            </section>
+          </>
+        )}
+
+        {view === 'post' && (
+          <PostItemForm onSubmit={addItem} onCancel={goBrowse} />
+        )}
+
+        {view === 'detail' && (
+          <ItemDetail
+            item={selectedItem}
+            requested={requested.includes(selectedId)}
+            onRequest={requestItem}
+            onBack={goBrowse}
+          />
+        )}
+      </main>
+
+      <Footer />
+
+      {/* Toast */}
+      {toast && (
+        <div
+          role="status"
+          className="animate-pop glow-ink fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-ink-900 px-4 py-4 text-white sm:left-auto sm:right-6 sm:mx-0"
+        >
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-mint-400">
+            <CheckIcon className="h-3.5 w-3.5 text-mint-950" strokeWidth={2.6} />
+          </span>
+          <p className="min-w-0 flex-1 truncate text-sm font-bold">{toast}</p>
+          <button
+            onClick={() => setToast(null)}
+            aria-label="Dismiss"
+            className="shrink-0 rounded-full p-1 text-white/50 transition hover:bg-white/15 hover:text-white"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
