@@ -15,11 +15,11 @@ export default function Navbar({ query, onQueryChange, onPost, onHome }) {
             <button
               onClick={onHome}
               className="flex shrink-0 items-center gap-2.5 rounded-2xl transition hover:opacity-70"
-              aria-label="RExchange home"
+              aria-label="Pratidaan home"
             >
               <LogoMark className="h-9 w-9 text-mint-500 drop-shadow-sm" />
               <span className="text-xl font-extrabold tracking-tight text-ink-900">
-                R<span className="text-mint-600">Exchange</span>
+                Prati<span className="text-mint-600">daan</span>
               </span>
             </button>
 

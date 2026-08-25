@@ -1,4 +1,4 @@
-# RExchange
+# Pratidaan
 
 A campus marketplace where students post resources to sell, exchange, or give
 away — textbooks, electronics, tickets, notes, skills and freebies.

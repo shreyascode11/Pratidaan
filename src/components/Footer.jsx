@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="flex items-center gap-2.5">
           <LogoMark className="h-7 w-7 text-mint-500" />
           <span className="text-sm font-extrabold tracking-tight text-ink-900">
-            R<span className="text-mint-600">Exchange</span>
+            Prati<span className="text-mint-600">daan</span>
           </span>
         </div>
         <p className="text-center text-xs font-medium text-ink-500 sm:text-right">

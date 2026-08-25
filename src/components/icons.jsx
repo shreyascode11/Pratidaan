@@ -106,14 +106,13 @@ export function LogoMark(props) {
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
       <rect width="32" height="32" rx="9" fill="#1a1d1c" />
       <path
-        d="M10 11.5h8a3.25 3.25 0 0 1 0 6.5h-3.5l5 6.5"
+        d="M10 24.5V11.5h8a3.25 3.25 0 0 1 0 6.5h-8"
         stroke="currentColor"
         strokeWidth="2.4"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
       />
-      <path d="M10 11.5V24.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
       <path
         d="M20.5 8.5h4.5M22.75 6.25v4.5"
         stroke="#bbebd0"
