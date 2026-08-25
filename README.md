@@ -93,18 +93,7 @@ npm run dev
 ```
 Navigate to `http://localhost:5173` to experience the marketplace.
 
----
 
-## 🌐 Zero-Config Vercel Deployment
-
-Pratidaan is structurally designed for instant edge deployment.
-
-1. Push your local `main` branch to GitHub.
-2. Navigate to [vercel.com/new](https://vercel.com/new) and select the repository.
-3. Vercel's build engine will automatically assign the **Vite preset**:
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-4. Click **Deploy**. Vercel handles the rest.
 
 ---
 
