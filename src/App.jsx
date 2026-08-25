@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import AmbientBackground from './components/AmbientBackground.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
 import ChatPanel from './components/ChatPanel.jsx'
+import Checkout from './components/Checkout.jsx'
 import Footer from './components/Footer.jsx'
 import Hero from './components/Hero.jsx'
 import ItemDetail from './components/ItemDetail.jsx'
@@ -25,7 +26,7 @@ export default function App() {
   const [items, setItems] = useState(SEED_ITEMS)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
-  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login' | 'cart' | 'wishlist'
+  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login' | 'cart' | 'wishlist' | 'checkout'
   const [cart, setCart] = useState([])
   const [wishlist, setWishlist] = useState([])
   // Gates the whole app: nothing else renders until the user signs up/logs in.
@@ -73,6 +74,15 @@ export default function App() {
   )
   const chatMessages = conversations[chatItemId] ?? []
 
+  const cartItems = useMemo(
+    () => cart.map((id) => items.find((i) => i.id === id)).filter(Boolean),
+    [cart, items],
+  )
+  const cartTotal = useMemo(
+    () => cartItems.reduce((sum, item) => sum + (item.price ? Number(item.price) : 0), 0),
+    [cartItems],
+  )
+
   // ---- actions -----------------------------------------------------------
   const goBrowse = useCallback(() => {
     setView('browse')
@@ -88,6 +98,16 @@ export default function App() {
   const openLogin = useCallback(() => setView('login'), [])
   const openCart = useCallback(() => setView('cart'), [])
   const openWishlist = useCallback(() => setView('wishlist'), [])
+  const openCheckout = useCallback(() => setView('checkout'), [])
+
+  // Called once the (simulated) payment succeeds: clear the cart, since the
+  // "purchase" is done, and send the user back to browse with a toast — same
+  // land-somewhere-with-feedback pattern as posting an item or logging in.
+  const completeCheckout = useCallback(() => {
+    setCart([])
+    goBrowse()
+    setToast('Order placed — thanks for shopping on Pratidaan!')
+  }, [goBrowse])
 
   const toggleWishlist = useCallback((id) => {
     setWishlist((prev) =>
@@ -328,18 +348,27 @@ export default function App() {
                 <div className="mt-8 border-t border-ink-200 pt-6 flex justify-between items-center">
                   <span className="text-xl font-bold text-ink-900">Total:</span>
                   <span className="text-2xl font-extrabold text-mint-700">
-                    {formatPrice(cart.reduce((sum, id) => {
-                      const item = items.find(i => i.id === id)
-                      return sum + (item && item.price ? Number(item.price) : 0)
-                    }, 0))}
+                    {formatPrice(cartTotal)}
                   </span>
                 </div>
-                <button className="w-full mt-6 bg-mint-500 text-mint-950 font-extrabold py-4 rounded-2xl hover:bg-mint-400 transition">
+                <button
+                  onClick={openCheckout}
+                  className="w-full mt-6 bg-mint-500 text-mint-950 font-extrabold py-4 rounded-2xl hover:bg-mint-400 transition"
+                >
                   Proceed to Checkout
                 </button>
               </div>
             )}
           </div>
+        )}
+
+        {view === 'checkout' && (
+          <Checkout
+            items={cartItems}
+            total={cartTotal}
+            onComplete={completeCheckout}
+            onBack={openCart}
+          />
         )}
 
         {view === 'wishlist' && (

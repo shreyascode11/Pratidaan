@@ -184,6 +184,40 @@ export function SendIcon(props) {
   )
 }
 
+export function CardIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <rect x="2.5" y="5" width="19" height="14" rx="2.2" />
+      <path d="M2.5 9.5h19" />
+      <path d="M6 14.5h4" />
+    </svg>
+  )
+}
+
+export function LockIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
+      <path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5" />
+      <circle cx="12" cy="15" r="1.4" />
+    </svg>
+  )
+}
+
+export function SpinnerIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.4" strokeOpacity="0.2" />
+      <path
+        d="M21 12a9 9 0 0 0-9-9"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 export function LogoMark(props) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>

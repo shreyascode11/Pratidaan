@@ -45,10 +45,10 @@ export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin, 
               )}
             </div>
 
-            <div className="ml-auto flex items-center gap-2 sm:ml-0 sm:gap-3">
+            <div className="ml-auto flex items-center gap-1.5 sm:ml-0 sm:gap-3">
               <button
                 onClick={onWishlist}
-                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-900/10 bg-white/55 text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85"
+                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink-900/10 bg-white/55 text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:h-10 sm:w-10"
                 aria-label="Wishlist"
               >
                 <HeartIcon className="h-4.5 w-4.5" />
@@ -61,7 +61,7 @@ export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin, 
               
               <button
                 onClick={onCart}
-                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-900/10 bg-white/55 text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85"
+                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink-900/10 bg-white/55 text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:h-10 sm:w-10"
                 aria-label="Cart"
               >
                 <CartIcon className="h-4.5 w-4.5" />
@@ -74,7 +74,7 @@ export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin, 
               
               <button
                 onClick={onLogin}
-                className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 bg-white/55 px-4 py-3 text-sm font-extrabold text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:px-5"
+                className="inline-flex h-9 w-9 items-center justify-center gap-1.5 rounded-full border border-ink-900/10 bg-white/55 text-sm font-extrabold text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
               >
                 <UserIcon className="h-4 w-4" strokeWidth={2.2} />
                 <span className="hidden sm:inline">Log in</span>
