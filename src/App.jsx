@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import AmbientBackground from './components/AmbientBackground.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
+import ChatPanel from './components/ChatPanel.jsx'
 import Footer from './components/Footer.jsx'
 import Hero from './components/Hero.jsx'
 import ItemDetail from './components/ItemDetail.jsx'
@@ -10,6 +11,7 @@ import Navbar from './components/Navbar.jsx'
 import PostItemForm from './components/PostItemForm.jsx'
 import { CATEGORIES, SEED_ITEMS } from './data/seed.js'
 import { CheckIcon, CloseIcon } from './components/icons.jsx'
+import { generateAutoReply } from './utils/chatReplies.js'
 
 const REQUEST_TOAST_VERB = {
   Sell: 'Request',
@@ -29,6 +31,11 @@ export default function App() {
   const [requested, setRequested] = useState([])
   const [newIds, setNewIds] = useState(new Set())
   const [toast, setToast] = useState(null)
+  // Chat: which item's thread is open, its messages, and whether the poster
+  // is "typing" — all in memory only, same as everything else in this app.
+  const [chatItemId, setChatItemId] = useState(null)
+  const [conversations, setConversations] = useState({}) // { [itemId]: Message[] }
+  const [typingItemId, setTypingItemId] = useState(null)
 
   // ---- derived -----------------------------------------------------------
   const counts = useMemo(() => {
@@ -56,6 +63,12 @@ export default function App() {
     () => items.filter((i) => i.type === 'Giveaway').length,
     [items],
   )
+
+  const chatItem = useMemo(
+    () => items.find((i) => i.id === chatItemId) ?? null,
+    [items, chatItemId],
+  )
+  const chatMessages = conversations[chatItemId] ?? []
 
   // ---- actions -----------------------------------------------------------
   const goBrowse = useCallback(() => {
@@ -106,6 +119,35 @@ export default function App() {
     setCategory('All')
   }, [])
 
+  const openChat = useCallback((id) => setChatItemId(id), [])
+  const closeChat = useCallback(() => setChatItemId(null), [])
+
+  // Simulates the other side of the conversation: no backend, no other real
+  // user, so a message sent into silence would just look broken. A short
+  // "typing…" pause and a canned, type-aware reply keeps it feeling alive.
+  const sendChatMessage = useCallback(
+    (text) => {
+      const id = chatItemId
+      if (!id) return
+      const item = items.find((i) => i.id === id)
+      const userMessage = { id: `msg${Date.now()}`, from: 'me', text }
+      setConversations((prev) => ({ ...prev, [id]: [...(prev[id] ?? []), userMessage] }))
+      setTypingItemId(id)
+
+      const delay = 1100 + Math.random() * 700
+      setTimeout(() => {
+        const reply = {
+          id: `msg${Date.now() + 1}`,
+          from: 'them',
+          text: generateAutoReply(item?.type),
+        }
+        setConversations((prev) => ({ ...prev, [id]: [...(prev[id] ?? []), reply] }))
+        setTypingItemId((current) => (current === id ? null : current))
+      }, delay)
+    },
+    [chatItemId, items],
+  )
+
   // Orbit icons live up in the hero, away from the grid they filter — so,
   // unlike the category pills that already sit right above the grid, picking
   // one also needs an explicit scroll down to where the result shows up.
@@ -142,13 +184,15 @@ export default function App() {
   }, [toast])
 
   // Escape backs out of detail / post views (not the login gate itself —
-  // there's nothing to back out to before signing up).
+  // there's nothing to back out to before signing up). Skipped while the
+  // chat panel is open so it doesn't fight with the panel's own Escape
+  // handler — one press closes the chat, not both the chat and the page.
   useEffect(() => {
-    if (view === 'browse' || view === 'login') return
+    if (view === 'browse' || view === 'login' || chatItemId) return
     const onKey = (e) => e.key === 'Escape' && goBrowse()
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [view, goBrowse])
+  }, [view, goBrowse, chatItemId])
 
   // ---- render ------------------------------------------------------------
   if (!authed) {
@@ -229,6 +273,7 @@ export default function App() {
             requested={requested.includes(selectedId)}
             onRequest={requestItem}
             onBack={goBrowse}
+            onOpenChat={openChat}
           />
         )}
 
@@ -264,6 +309,16 @@ export default function App() {
             <CloseIcon className="h-4 w-4" />
           </button>
         </div>
+      )}
+
+      {chatItem && (
+        <ChatPanel
+          item={chatItem}
+          messages={chatMessages}
+          isTyping={typingItemId === chatItemId}
+          onClose={closeChat}
+          onSend={sendChatMessage}
+        />
       )}
     </div>
   )

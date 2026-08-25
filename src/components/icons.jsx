@@ -167,6 +167,23 @@ export function GiftIcon(props) {
   )
 }
 
+export function ChatIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-4.8 4v-4H6.5A2.5 2.5 0 0 1 4 13.5Z" />
+    </svg>
+  )
+}
+
+export function SendIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M4.5 11.5 20 4l-6.5 15.5-2.7-6.3Z" />
+      <path d="M13.3 13.2 20 4" />
+    </svg>
+  )
+}
+
 export function LogoMark(props) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>

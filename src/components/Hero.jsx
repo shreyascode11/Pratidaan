@@ -36,12 +36,14 @@ export default function Hero({ total, freeCount, onPost, onSelectCategory }) {
             >
               Post an Item
             </button>
-            <a
-              href="#listings"
+            {/* A plain <a href="#listings"> would only scroll — it never
+                actually filtered to Freebies, despite the label. */}
+            <button
+              onClick={() => onSelectCategory('Freebies')}
               className="glass rounded-full px-6 py-4 text-sm font-extrabold text-ink-800 transition duration-300 hover:-translate-y-0.5"
             >
               Browse {freeCount} freebies &rarr;
-            </a>
+            </button>
           </div>
         </div>
       </div>

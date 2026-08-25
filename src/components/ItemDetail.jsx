@@ -1,7 +1,7 @@
 import Avatar from './Avatar.jsx'
 import SmartImage from './SmartImage.jsx'
 import TypeBadge from './TypeBadge.jsx'
-import { ArrowLeftIcon, CheckIcon, MapPinIcon, TagIcon } from './icons.jsx'
+import { ArrowLeftIcon, ChatIcon, CheckIcon, MapPinIcon, TagIcon } from './icons.jsx'
 import { priceLabel, timeAgo } from '../utils/format.js'
 
 const ACTION_LABEL = {
@@ -16,7 +16,7 @@ const REQUEST_NOUN = {
   Giveaway: 'claim',
 }
 
-export default function ItemDetail({ item, requested, onRequest, onBack }) {
+export default function ItemDetail({ item, requested, onRequest, onBack, onOpenChat }) {
   if (!item) return null
 
   return (
@@ -31,7 +31,7 @@ export default function ItemDetail({ item, requested, onRequest, onBack }) {
 
       <div className="grid animate-rise gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-8">
         {/* Image */}
-        <div className="self-start overflow-hidden rounded-[2rem] border border-white/60 bg-white/40 p-2 shadow-[0_30px_70px_-35px_rgba(16,24,20,0.5)] backdrop-blur">
+        <div className="min-w-0 self-start overflow-hidden rounded-[2rem] border border-white/60 bg-white/40 p-2 shadow-[0_30px_70px_-35px_rgba(16,24,20,0.5)] backdrop-blur">
           <SmartImage
             src={item.image}
             alt={item.title}
@@ -42,7 +42,7 @@ export default function ItemDetail({ item, requested, onRequest, onBack }) {
         </div>
 
         {/* Info */}
-        <div className="glass flex flex-col rounded-[2rem] p-6 sm:p-8">
+        <div className="glass flex min-w-0 flex-col rounded-[2rem] p-6 sm:p-8">
           <div className="flex flex-wrap items-center gap-2">
             <TypeBadge type={item.type} tone="soft" />
             <span className="inline-flex items-center gap-1.5 rounded-full bg-ink-900/6 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-ink-600">
@@ -82,7 +82,7 @@ export default function ItemDetail({ item, requested, onRequest, onBack }) {
 
           <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/70 bg-white/50 p-4">
             <Avatar name={item.poster} size="lg" />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink-400">
                 Posted by
               </p>
@@ -90,6 +90,13 @@ export default function ItemDetail({ item, requested, onRequest, onBack }) {
                 {item.poster}
               </p>
             </div>
+            <button
+              onClick={() => onOpenChat(item.id)}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-mint-300/60 bg-mint-100/70 px-3.5 py-2 text-xs font-extrabold text-mint-800 transition duration-300 hover:-translate-y-0.5 hover:bg-mint-200/80"
+            >
+              <ChatIcon className="h-3.5 w-3.5" />
+              Message
+            </button>
           </div>
 
           <div className="mt-6">
