@@ -22,11 +22,25 @@ const EMPTY = {
   poster: '',
 }
 
-export default function PostItemForm({ onSubmit, onCancel }) {
-  const [form, setForm] = useState(EMPTY)
+export default function PostItemForm({ onSubmit, onCancel, editingItem, defaultPoster }) {
+  const isEditing = Boolean(editingItem)
+
+  const [form, setForm] = useState(() =>
+    editingItem
+      ? {
+          title: editingItem.title,
+          category: editingItem.category,
+          type: editingItem.type,
+          price: editingItem.price ?? '',
+          description: editingItem.description ?? '',
+          image: editingItem.image ?? '',
+          poster: editingItem.poster ?? '',
+        }
+      : { ...EMPTY, poster: defaultPoster ?? '' },
+  )
   const [errors, setErrors] = useState({})
   // Preview lags the input so a half-typed URL isn't fetched on every keystroke.
-  const [previewSrc, setPreviewSrc] = useState('')
+  const [previewSrc, setPreviewSrc] = useState(editingItem?.image ?? '')
 
   useEffect(() => {
     const id = setTimeout(() => setPreviewSrc(form.image.trim()), 500)
@@ -168,16 +182,17 @@ export default function PostItemForm({ onSubmit, onCancel }) {
         className="glass group mb-7 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-ink-700 transition duration-300 hover:-translate-y-0.5 hover:text-ink-900"
       >
         <ArrowLeftIcon className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-        Back to browse
+        {isEditing ? 'Back to my listings' : 'Back to browse'}
       </button>
 
       <div className="animate-rise">
         <h1 className="text-4xl font-extrabold leading-[1.05] tracking-[-0.02em] text-ink-900 sm:text-5xl">
-          Post an item
+          {isEditing ? 'Edit your listing' : 'Post an item'}
         </h1>
         <p className="mt-3 text-base text-ink-600">
-          It takes about thirty seconds. Your listing goes straight to the top of
-          the board.
+          {isEditing
+            ? 'Update the details below — changes save immediately.'
+            : 'It takes about thirty seconds. Your listing goes straight to the top of the board.'}
         </p>
 
         <form
@@ -301,6 +316,8 @@ export default function PostItemForm({ onSubmit, onCancel }) {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
+                aria-label="Upload a photo from your device"
+                tabIndex={-1}
                 className="sr-only"
               />
               <button
@@ -399,7 +416,7 @@ export default function PostItemForm({ onSubmit, onCancel }) {
               type="submit"
               className="glow-mint rounded-full bg-mint-500 px-8 py-3.5 text-sm font-extrabold text-mint-950 transition duration-300 hover:-translate-y-0.5 hover:bg-mint-400 active:translate-y-0"
             >
-              Publish listing
+              {isEditing ? 'Save changes' : 'Publish listing'}
             </button>
           </div>
         </form>

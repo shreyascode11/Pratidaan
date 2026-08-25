@@ -8,8 +8,11 @@ import Hero from './components/Hero.jsx'
 import ItemDetail from './components/ItemDetail.jsx'
 import ItemGrid from './components/ItemGrid.jsx'
 import LoginPage from './components/LoginPage.jsx'
+import MyListings from './components/MyListings.jsx'
 import Navbar from './components/Navbar.jsx'
+import OrderHistory from './components/OrderHistory.jsx'
 import PostItemForm from './components/PostItemForm.jsx'
+import Profile from './components/Profile.jsx'
 import { CATEGORIES, SEED_ITEMS } from './data/seed.js'
 import { CheckIcon, CloseIcon } from './components/icons.jsx'
 import { generateAutoReply } from './utils/chatReplies.js'
@@ -26,14 +29,19 @@ export default function App() {
   const [items, setItems] = useState(SEED_ITEMS)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
-  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login' | 'cart' | 'wishlist' | 'checkout'
+  // 'browse' | 'post' | 'edit' | 'detail' | 'cart' | 'checkout' | 'wishlist'
+  // | 'profile' | 'mylistings' | 'orders'
+  const [view, setView] = useState('browse')
   const [cart, setCart] = useState([])
   const [wishlist, setWishlist] = useState([])
   // Gates the whole app: nothing else renders until the user signs up/logs in.
   const [authed, setAuthed] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null) // { name, email, gender }
   const [selectedId, setSelectedId] = useState(null)
+  const [editingId, setEditingId] = useState(null)
   const [requested, setRequested] = useState([])
   const [newIds, setNewIds] = useState(new Set())
+  const [orders, setOrders] = useState([])
   const [toast, setToast] = useState(null)
   // Chat: which item's thread is open, its messages, and whether the poster
   // is "typing" — all in memory only, same as everything else in this app.
@@ -83,6 +91,22 @@ export default function App() {
     [cartItems],
   )
 
+  // newIds already tracks every item posted via the form this session — in
+  // this single-user demo that's exactly "items I posted", so there's no
+  // need for a second, redundant id list just for My Listings.
+  const myListings = useMemo(
+    () => items.filter((i) => newIds.has(i.id)),
+    [items, newIds],
+  )
+  const editingItem = useMemo(
+    () => items.find((i) => i.id === editingId) ?? null,
+    [items, editingId],
+  )
+  const requestedItems = useMemo(
+    () => requested.map((id) => items.find((i) => i.id === id)).filter(Boolean),
+    [requested, items],
+  )
+
   // ---- actions -----------------------------------------------------------
   const goBrowse = useCallback(() => {
     setView('browse')
@@ -95,19 +119,67 @@ export default function App() {
   }, [])
 
   const openPost = useCallback(() => setView('post'), [])
-  const openLogin = useCallback(() => setView('login'), [])
   const openCart = useCallback(() => setView('cart'), [])
   const openWishlist = useCallback(() => setView('wishlist'), [])
   const openCheckout = useCallback(() => setView('checkout'), [])
+  const openProfile = useCallback(() => setView('profile'), [])
+  const openMyListings = useCallback(() => setView('mylistings'), [])
+  const openOrders = useCallback(() => setView('orders'), [])
 
-  // Called once the (simulated) payment succeeds: clear the cart, since the
-  // "purchase" is done, and send the user back to browse with a toast — same
-  // land-somewhere-with-feedback pattern as posting an item or logging in.
+  const openEdit = useCallback((id) => {
+    setEditingId(id)
+    setView('edit')
+  }, [])
+
+  const updateItem = useCallback(
+    (id, draft) => {
+      setItems((prev) => prev.map((item) => (item.id === id ? { ...item, ...draft } : item)))
+      setEditingId(null)
+      setView('mylistings')
+      setToast(`“${draft.title}” updated.`)
+    },
+    [],
+  )
+
+  // Removing a listing also drops it from newIds/cart/wishlist — otherwise a
+  // deleted item could linger as a phantom entry in My Listings, Cart, or
+  // Wishlist even though it no longer exists in `items`.
+  const removeListing = useCallback((id) => {
+    setItems((prev) => prev.filter((item) => item.id !== id))
+    setNewIds((prev) => {
+      const next = new Set(prev)
+      next.delete(id)
+      return next
+    })
+    setCart((prev) => prev.filter((i) => i !== id))
+    setWishlist((prev) => prev.filter((i) => i !== id))
+    setToast('Listing removed.')
+  }, [])
+
+  const signOut = useCallback(() => {
+    setAuthed(false)
+    setCurrentUser(null)
+    goBrowse()
+  }, [goBrowse])
+
+  // Called once the (simulated) payment succeeds: record the order, clear
+  // the cart since the "purchase" is done, and send the user back to browse
+  // with a toast — same land-somewhere-with-feedback pattern as posting an
+  // item or logging in.
   const completeCheckout = useCallback(() => {
+    setOrders((prev) => [
+      ...prev,
+      {
+        id: `order${Date.now()}`,
+        items: cartItems.map((i) => ({ id: i.id, title: i.title, image: i.image, price: i.price })),
+        total: cartTotal,
+        completedAt: new Date().toISOString(),
+      },
+    ])
     setCart([])
     goBrowse()
     setToast('Order placed — thanks for shopping on Pratidaan!')
-  }, [goBrowse])
+  }, [cartItems, cartTotal, goBrowse])
 
   const toggleWishlist = useCallback((id) => {
     setWishlist((prev) =>
@@ -194,7 +266,19 @@ export default function App() {
   }, [])
 
   const submitLogin = useCallback((payload) => {
+    // "Log in" mode never collects a name (only email/password) — fall back
+    // to something derived from the email rather than showing a blank or a
+    // generic "You" on the profile page for every returning-user login.
+    const fallbackName = payload.email
+      .split('@')[0]
+      ?.replace(/[._]+/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase())
     setAuthed(true)
+    setCurrentUser({
+      name: payload.name.trim() || fallbackName || 'You',
+      email: payload.email,
+      gender: payload.gender,
+    })
     setView('browse')
     setToast(
       payload.mode === 'signup'
@@ -220,12 +304,11 @@ export default function App() {
     return () => clearTimeout(t)
   }, [toast])
 
-  // Escape backs out of detail / post views (not the login gate itself —
-  // there's nothing to back out to before signing up). Skipped while the
-  // chat panel is open so it doesn't fight with the panel's own Escape
-  // handler — one press closes the chat, not both the chat and the page.
+  // Escape backs out of any non-browse view. Skipped while the chat panel is
+  // open so it doesn't fight with the panel's own Escape handler — one press
+  // closes the chat, not both the chat and the page.
   useEffect(() => {
-    if (view === 'browse' || view === 'login' || chatItemId) return
+    if (view === 'browse' || chatItemId) return
     const onKey = (e) => e.key === 'Escape' && goBrowse()
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -251,7 +334,8 @@ export default function App() {
         onWishlist={openWishlist}
         cartCount={cart.length}
         wishlistCount={wishlist.length}
-        onLogin={openLogin}
+        onAccount={openProfile}
+        userName={currentUser?.name}
       />
 
       <main className="flex-1">
@@ -307,7 +391,19 @@ export default function App() {
         )}
 
         {view === 'post' && (
-          <PostItemForm onSubmit={addItem} onCancel={goBrowse} />
+          <PostItemForm
+            onSubmit={addItem}
+            onCancel={goBrowse}
+            defaultPoster={currentUser?.name}
+          />
+        )}
+
+        {view === 'edit' && (
+          <PostItemForm
+            editingItem={editingItem}
+            onSubmit={(draft) => updateItem(editingId, draft)}
+            onCancel={openMyListings}
+          />
         )}
 
         {view === 'detail' && (
@@ -391,8 +487,37 @@ export default function App() {
           </div>
         )}
 
-        {view === 'login' && (
-          <LoginPage onSubmit={submitLogin} onBack={goBrowse} />
+        {view === 'profile' && currentUser && (
+          <Profile
+            user={currentUser}
+            listingCount={myListings.length}
+            orderCount={orders.length}
+            requestCount={requested.length}
+            onOpenMyListings={openMyListings}
+            onOpenOrders={openOrders}
+            onSignOut={signOut}
+            onBack={goBrowse}
+          />
+        )}
+
+        {view === 'mylistings' && (
+          <MyListings
+            items={myListings}
+            onView={openDetail}
+            onEdit={openEdit}
+            onRemove={removeListing}
+            onPost={openPost}
+            onBack={openProfile}
+          />
+        )}
+
+        {view === 'orders' && (
+          <OrderHistory
+            orders={orders}
+            requestedItems={requestedItems}
+            onView={openDetail}
+            onBack={openProfile}
+          />
         )}
       </main>
 

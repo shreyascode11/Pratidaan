@@ -51,6 +51,12 @@ function FeatureCard({ item, onView, isNew, inWishlist, onToggleWishlist }) {
                 e.stopPropagation()
                 onToggleWishlist(item.id)
               }}
+              aria-label={
+                inWishlist
+                  ? `Remove ${item.title} from wishlist`
+                  : `Add ${item.title} to wishlist`
+              }
+              aria-pressed={inWishlist}
               className={`p-2 rounded-full transition-colors ${inWishlist ? 'text-red-400 bg-white/10' : 'text-white/50 hover:text-white/90 hover:bg-white/10'}`}
             >
               <HeartIcon className="h-5 w-5" filled={inWishlist} />
@@ -119,6 +125,12 @@ function StandardCard({ item, onView, isNew, inWishlist, onToggleWishlist }) {
               e.stopPropagation()
               onToggleWishlist(item.id)
             }}
+            aria-label={
+              inWishlist
+                ? `Remove ${item.title} from wishlist`
+                : `Add ${item.title} to wishlist`
+            }
+            aria-pressed={inWishlist}
             className={`p-1 -mt-1 -mr-1 rounded-full transition-colors ${inWishlist ? 'text-red-500' : 'text-ink-300 hover:text-ink-600'}`}
           >
             <HeartIcon className="h-4.5 w-4.5" filled={inWishlist} />

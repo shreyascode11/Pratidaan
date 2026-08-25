@@ -1,108 +1,197 @@
 <div align="center">
-  <h1>🎓 Pratidaan</h1>
-  <p><b>A Next-Generation Campus Marketplace Ecosystem</b></p>
-  <p>Made by <b>Shreyas</b></p>
-  <p>
-    <a href="https://pratidaan.vercel.app/"><b>🌐 View Live Demo</b></a>
-  </p>
+  <h1>Pratidaan</h1>
+  <p><b>A context-aware campus marketplace assistant</b></p>
+  <p><a href="https://pratidaan.vercel.app/"><b>Live demo</b></a></p>
   <p>
     <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 19" /></a>
     <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite 8" /></a>
-    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-CSS_v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
-    <a href="https://vercel.com/"><img src="https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white" alt="Vercel" /></a>
+    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4" /></a>
+    <img src="https://img.shields.io/badge/tests-37%20passing-3bb078?style=flat-square" alt="37 tests passing" />
+    <img src="https://img.shields.io/badge/WCAG_2.1_AA-0_violations-3bb078?style=flat-square" alt="WCAG 2.1 AA clean" />
   </p>
 </div>
 
 ---
 
-## 🚀 Overview
+## 1. Chosen vertical
 
-**Pratidaan** transcends the traditional college bulletin board. It is a highly optimized, single-page application (SPA) crafted to facilitate the exchange, sale, and giveaway of campus resources—from textbooks to electronics and skills. 
+**Student / campus commerce.**
 
-Operating entirely in-memory with zero backend dependencies, it serves as a lightning-fast portfolio piece and an architectural blueprint for scalable e-commerce micro-frontends.
+**Persona — the resident student.** They accumulate things each semester they no
+longer need (last term's textbook, a mini fridge before moving out) and need
+things they can't justify buying new. Their constraints shape every decision in
+this app: they are broke, they are busy, they are on foot, and the person on the
+other side of the trade is a stranger who shares their campus.
+
+That persona is why this is deliberately *not* a generic e-commerce clone:
+
+| Generic marketplace | Pratidaan |
+| :--- | :--- |
+| Everything has a price | Sell **/ Exchange / Giveaway** are first-class equals |
+| "Add to Cart" on everything | Cart appears **only** on `Sell` items — you cannot "buy" a swap |
+| Ships to an address | Every listing carries a **campus meetup spot** |
+| Reviews after purchase | Meet-in-public safety note on every item |
 
 ---
 
-## 🏗️ Architecture & Data Flow
+## 2. Approach and logic
 
-Unlike traditional applications reliant on heavy database round-trips, Pratidaan leverages an **In-Memory State Machine Architecture**. The entire application state is dynamically computed client-side, ensuring sub-millisecond route transitions.
+The core idea: **one listing object drives different app behaviour depending on
+its type and the viewer's context.** Rather than branching the UI by hand in a
+dozen places, the listing's `type` is the single input that a small set of
+resolvers read from.
 
 ```mermaid
-graph TD;
-    User((User)) -->|Interacts| UI[Glassmorphic UI Components]
-    UI -->|Dispatches Actions| Context[App.jsx State Controller]
-    
-    subgraph State Management
-        Context --> |Updates| Cart(Shopping Cart Array)
-        Context --> |Updates| Wishlist(Wishlist Array)
-        Context --> |Updates| Inventory(Seed Inventory)
-        Context --> |Updates| Chat(In-Memory Chat Logs)
-    end
-    
-    Cart -->|Re-renders| UI
-    Wishlist -->|Re-renders| UI
-    Inventory -->|Filters & Sorts| Grid[Bento Grid Engine]
-    Grid -->|Renders| UI
+graph TD
+    U((Student)) -->|signs up| G[Auth gate]
+    G -->|context: name, avatar| S[App state]
+    S --> R{listing.type?}
+    R -->|Sell| A["₹ price · Add to Cart · 'Request this item'"]
+    R -->|Exchange| B["'Swap' · no cart · 'Propose a swap'"]
+    R -->|Giveaway| C["'Free' · no cart · 'Claim this item'"]
+    A & B & C --> D[Chat reply pool matched to type]
+    S --> E[AI description assist]
+    E -->|title + category + type| F[Contextual draft]
 ```
 
-### 🧩 The Glassmorphism Design System
-The UI is driven by a bespoke, hardware-accelerated design token system:
-- **Soft Ambient Underlays:** A static, blurred mesh gradient sits fixed at the root level.
-- **Refractive Panels (`.glass`):** Translucent fills combining `backdrop-filter: blur()`, inset top-highlights, and multi-layered CSS drop-shadows to simulate physical glass depth.
-- **Bento Grid Engine:** A mathematical grid layout utilizing `grid-flow-row-dense` where every 7th item dynamically spans two columns, ensuring zero visual holes regardless of array length.
+### Where the decision-making actually lives
 
----
+Every one of these is a real branch on user context, not decoration:
 
-## ✨ Core Features
-
-* 🛒 **Dynamic Cart & Wishlist System:** Add products to your cart with real-time INR (₹) total computations, or favorite items for later.
-* 💬 **Simulated AI Messaging Engine:** Engage in hyper-realistic, simulated negotiations. The in-memory chat thread retains history per item and mimics typing delays.
-* 🤖 **Rule-Based LLM Prompting:** The *Generate with AI* button crafts contextual listing descriptions by concatenating item metrics, requiring zero network overhead.
-* 🔍 **O(N) Real-Time Search:** Instantaneous filtering across titles and categories utilizing React `useMemo` hooks to prevent unnecessary re-renders.
-
----
-
-## 💻 Tech Stack
-
-| Layer | Technology | Purpose |
+| Decision | Input | Behaviour |
 | :--- | :--- | :--- |
-| **View** | React 19 | Component-based rendering and hooks-driven state |
-| **Build Tool** | Vite 8 | Ultra-fast HMR and optimized production bundling |
-| **Styling** | Tailwind CSS v4 | Utility-first design system and glassmorphic shadows |
-| **Icons** | Custom SVG | Hand-coded, inline SVGs for zero render-blocking |
-| **Hosting** | Vercel | Edge-network deployment and CI/CD |
+| Primary call-to-action | `item.type` | *Request this item* / *Propose a swap* / *Claim this item* |
+| Price display | `item.type`, `item.price` | `₹3,000` / `Swap` / `Free` / `Ask` |
+| Cart availability | `item.type` | Offered on `Sell` only — a giveaway has nothing to check out |
+| Chat auto-reply | `item.type` | Separate reply pools; a swap listing negotiates a trade, a giveaway says "come grab it" |
+| AI description | title + category + type | Category-specific hooks and type-specific closers |
+| Toast wording | `item.type` | "Swap request sent to Marcus!" vs "Claim sent to Maya!" |
+| Navbar identity | auth state | Shows the signed-in user's first name, not a stale "Log in" |
+| Grid layout | result count | Bento grid re-flows; every 7th tile spans two columns |
+
+### The AI assist
+
+The **✨ Generate with AI** button on the post form composes a listing
+description from what the user has already told us — title, category, and offer
+type — because that is the point in the flow where a student stalls.
+
+It defaults to a **local rule-based generator** (category-aware hooks × type-aware
+closers, lightly randomised) so the feature works offline, instantly, and at zero
+cost. If `VITE_OPENAI_API_KEY` is set it will call a real LLM instead, and on
+*any* failure — missing key, network error, timeout, rate limit — it silently
+falls back to the local generator. **The button can never hang or produce
+nothing**, and the whole feature is optional: the form works identically if it is
+never touched.
 
 ---
 
-## ⚙️ Local Development
+## 3. How the solution works
 
-### Prerequisites
-- **Node.js**: v20.19+ or v22.12+ (Required by Vite 8)
+### Run it
 
-### Installation
 ```bash
-# 1. Clone the repository
-git clone https://github.com/shreyascode11/Pratidaan.git
-cd Pratidaan
-
-# 2. Install dependencies
 npm install
-
-# 3. Spin up the dev server (HMR enabled)
-npm run dev
+npm run dev          # http://localhost:5173
 ```
-Navigate to `http://localhost:5173` to experience the marketplace.
 
+### Test it
 
+```bash
+npm run build
+npm run preview      # serves the build on :4173, required by the tests
+npm test             # in a second terminal — 37 checks
+```
+
+### Architecture
+
+Single-page React app with **no backend**. All state lives in `App.jsx` and flows
+down; there is no global store because the state graph is small enough that
+prop-passing stays readable and traceable.
+
+```
+src/
+  App.jsx                     state, routing, all cross-cutting actions
+  index.css                   design tokens + .glass / .glow / .lift utilities
+  data/seed.js                25 seed listings
+  utils/
+    format.js                 ₹ formatting, relative dates, price labels
+    generateDescription.js    AI assist + local fallback generator
+    chatReplies.js            type-aware reply pools
+  components/                 one file per screen or reusable unit
+tests/
+  helpers.mjs                 shared harness (launch, auth, checkers)
+  e2e.test.mjs                31 end-to-end checks
+  a11y.test.mjs               axe-core WCAG 2.1 AA audit, 6 screens
+```
+
+### Key flows
+
+- **Auth gate** — nothing renders until signup; `Escape` cannot bypass it.
+- **Browse** — live title search + category filter, animated hero orbit, bento grid.
+- **Post an item** — validation, image upload *or* URL, AI description assist.
+- **Item detail** — type-aware CTA, chat with the poster, cart/wishlist.
+- **Cart → demo checkout** — card formatting, validation, simulated payment.
+- **Profile** — My Listings (edit/remove) and Order & Request History.
 
 ---
 
-## 🧠 Optional: Real AI Integration
+## 4. Assumptions made
 
-By default, the AI description generator relies on a local pseudo-random template engine to ensure the app functions 100% offline. 
+1. **No backend, by design.** State is in-memory and resets on refresh. This keeps
+   the repo self-contained and reviewable; swapping in an API means replacing
+   `useState(SEED_ITEMS)` and the handful of action handlers in `App.jsx`.
+2. **Auth is simulated.** Any valid-format email and a 6+ character password are
+   accepted. There is no credential store, so nothing is verified against one.
+3. **Payment is simulated and labelled as such.** The checkout is marked
+   *"Demo — no real payment"* on-screen, hints Stripe's well-known `4242…` test
+   number, and never transmits or stores anything.
+4. **The other side of a chat is simulated.** With no second user, a message sent
+   into silence would look broken — so a short "typing…" pause and a type-aware
+   canned reply stand in.
+5. **"My Listings" means items posted this session,** since there is no persistent
+   account to attribute older listings to.
+6. **Seller ratings are deterministic decoration,** derived from a hash of the
+   name. They are not real reviews and are not presented as such.
+7. **Currency is INR** and meetup locations are campus-relative.
 
-To bridge this to a live Large Language Model:
-1. Create a `.env.local` file at the root.
-2. Inject your key: `VITE_OPENAI_API_KEY=sk-...`
+---
 
-*(Note: Because this is a backend-less SPA, this key will be bundled to the client. This is strictly for local demonstration purposes and should never be deployed publicly with billable limits).*
+## 5. Engineering notes
+
+### Testing — 37 automated checks, `npm test`
+
+Tests drive **real Chrome against a real production build**, because every
+significant bug this project actually hit was a browser-level one that a JSDOM
+unit test would have missed:
+
+- an image that **never loaded** because it was hidden with `display:none` while
+  `loading="lazy"` waited for a layout box that never came;
+- a toast that **silently swallowed clicks** meant for the form beneath it;
+- a grid that **overflowed horizontally** only below the `lg` breakpoint.
+
+### Accessibility — 0 violations, `npm run test:a11y`
+
+axe-core (WCAG 2.1 A + AA) runs against six screens in CI. It caught two real
+critical defects that visual review had missed — wishlist buttons with **no
+accessible name**, and an unlabelled file input — both now fixed. Beyond the
+audit: full keyboard support, `Escape` to dismiss overlays, `aria-pressed` on
+toggles, visible focus rings, and `prefers-reduced-motion` honoured by every
+animation.
+
+### Security
+
+- **No secret is ever committed.** `.env*.local` is git-ignored, and the one
+  optional key is read from the environment. Because this is a backend-less SPA,
+  any key would be bundled into client JS — so this is documented as
+  local-experimentation-only, and the feature is fully functional without it.
+- **No XSS surface** — no `dangerouslySetInnerHTML`, no `eval`, no raw
+  `innerHTML`; React escapes all rendered user input.
+- **Uploads validated client-side** for MIME type and a 5 MB ceiling.
+- **`npm audit`: 0 vulnerabilities**, production and dev.
+
+### Efficiency
+
+- **~88 KB gzipped**, zero runtime dependencies beyond React.
+- Derived state is memoised (`useMemo`) and handlers are stable (`useCallback`).
+- Images lazy-load below the fold and degrade to a branded placeholder on failure.
+- Animations are transform/opacity only, so they stay on the compositor.

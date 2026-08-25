@@ -1,6 +1,6 @@
 import { LogoMark, PlusIcon, SearchIcon, CloseIcon, UserIcon, CartIcon, HeartIcon } from "./icons.jsx";
 
-export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin, onCart, onWishlist, cartCount = 0, wishlistCount = 0 }) {
+export default function Navbar({ query, onQueryChange, onPost, onHome, onAccount, onCart, onWishlist, cartCount = 0, wishlistCount = 0, userName }) {
   return (
     <div className="sticky top-0 z-40">
       {/* Blurred strip so page content scrolling past doesn't peek above the
@@ -73,11 +73,14 @@ export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin, 
               </button>
               
               <button
-                onClick={onLogin}
-                className="inline-flex h-9 w-9 items-center justify-center gap-1.5 rounded-full border border-ink-900/10 bg-white/55 text-sm font-extrabold text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
+                onClick={onAccount}
+                aria-label="Account"
+                className="inline-flex h-9 w-9 items-center justify-center gap-1.5 rounded-full border border-ink-900/10 bg-white/55 text-sm font-extrabold text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:h-auto sm:w-auto sm:max-w-32 sm:px-5 sm:py-3"
               >
-                <UserIcon className="h-4 w-4" strokeWidth={2.2} />
-                <span className="hidden sm:inline">Log in</span>
+                <UserIcon className="h-4 w-4 shrink-0" strokeWidth={2.2} />
+                <span className="hidden truncate sm:inline">
+                  {userName ? userName.split(" ")[0] : "Account"}
+                </span>
               </button>
               
               <button

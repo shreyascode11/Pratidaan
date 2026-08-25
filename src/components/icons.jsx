@@ -218,6 +218,65 @@ export function SpinnerIcon(props) {
   )
 }
 
+export function EditIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5.5 16.5 4 20Z" />
+      <path d="M14 6.5 17.5 10" />
+    </svg>
+  )
+}
+
+export function TrashIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M4.5 6.5h15" />
+      <path d="M8.5 6.5V4.8a1.3 1.3 0 0 1 1.3-1.3h4.4a1.3 1.3 0 0 1 1.3 1.3v1.7" />
+      <path d="M6.5 6.5 7.3 19a2 2 0 0 0 2 1.9h5.4a2 2 0 0 0 2-1.9l.8-12.5" />
+      <path d="M10.2 10.5v6.3M13.8 10.5v6.3" />
+    </svg>
+  )
+}
+
+export function LogOutIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M9.5 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.5" />
+      <path d="M16 16.5 21 12l-5-4.5" />
+      <path d="M21 12H9.5" />
+    </svg>
+  )
+}
+
+export function PackageIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="m3.5 8 8.5-4.5L20.5 8v8l-8.5 4.5L3.5 16Z" />
+      <path d="M3.5 8 12 12.5 20.5 8" />
+      <path d="M12 12.5V21" />
+    </svg>
+  )
+}
+
+export function ListIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M8.5 6.5h11M8.5 12h11M8.5 17.5h11" />
+      <circle cx="4.5" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="4.5" cy="12" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="4.5" cy="17.5" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function ChevronRightIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="m9 6 6 6-6 6" />
+    </svg>
+  )
+}
+
 export function LogoMark(props) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
