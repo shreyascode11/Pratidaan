@@ -8,6 +8,11 @@
  * visible is far more reliable across browsers than trying to CSS-transition
  * between two different path `d` strings, which doesn't interpolate at all.
  * The idle float/glow keeps running underneath, independent of that swap.
+ *
+ * Structure per variant (silhouette only — still faceless/abstract):
+ *  - neutral: symmetric, moderate taper — the default before a choice is made
+ *  - male:    broad shoulders, minimal waist taper — a blockier, grounded build
+ *  - female:  narrow waist, pronounced flare — a tall, curved hourglass build
  */
 export default function Mascot({ gender = 'neutral', className = '' }) {
   return (
@@ -44,13 +49,14 @@ export default function Mascot({ gender = 'neutral', className = '' }) {
             </radialGradient>
           </defs>
 
-          {/* ambient glow behind the figure — pulses gently on its own */}
+          {/* ambient glow behind the figure — pulses gently on its own; sized
+              to clear the widest (male) and tallest (female) variants */}
           <ellipse
             className="mascot-glow"
             cx="110"
-            cy="150"
-            rx="118"
-            ry="130"
+            cy="152"
+            rx="132"
+            ry="142"
             fill="url(#mascotGlow)"
           />
 
@@ -58,14 +64,14 @@ export default function Mascot({ gender = 'neutral', className = '' }) {
           <ellipse
             className="mascot-shadow"
             cx="110"
-            cy="278"
-            rx="56"
+            cy="282"
+            rx="60"
             ry="11"
             fill="#000"
             opacity="0.3"
           />
 
-          {/* ---- neutral (default) ---- */}
+          {/* ---- neutral (default): symmetric, moderate taper ---- */}
           <g className="mascot-variant mascot-variant-neutral">
             <path
               className="mascot-arm"
@@ -90,10 +96,10 @@ export default function Mascot({ gender = 'neutral', className = '' }) {
               ry="38"
               fill="url(#mascotHighlight)"
             />
-            <circle cx="110" cy="152" r="10.5" fill="#dcf5e7" fillOpacity="0.92" />
+            <circle cx="110" cy="146" r="10.5" fill="#dcf5e7" fillOpacity="0.92" />
             <circle
               cx="110"
-              cy="152"
+              cy="146"
               r="14.5"
               fill="none"
               stroke="#5ec792"
@@ -102,38 +108,39 @@ export default function Mascot({ gender = 'neutral', className = '' }) {
             />
           </g>
 
-          {/* ---- male: broader shoulders, squarer taper, faceted accent ---- */}
+          {/* ---- male: broad shoulders, square-ish torso, minimal waist
+                 taper — a blocky, grounded silhouette ---- */}
           <g className="mascot-variant mascot-variant-male">
             <path
               className="mascot-arm"
-              d="M58,116 C36,120 24,146 30,177 C33,196 49,205 65,198 C74,161 70,132 58,116 Z"
+              d="M50,114 C25,119 10,148 17,182 C21,201 39,211 58,203 C68,163 63,131 50,114 Z"
               fill="url(#mascotBodyMale)"
             />
             <path
               className="mascot-arm"
-              d="M162,116 C184,120 196,146 190,177 C187,196 171,205 155,198 C146,161 150,132 162,116 Z"
+              d="M170,114 C195,119 210,148 203,182 C199,201 181,211 162,203 C152,163 157,131 170,114 Z"
               fill="url(#mascotBodyMale)"
             />
             <path
               className="mascot-body"
-              d="M110,32 C144,32 168,54 169,84 C170,106 157,118 157,142 C157,168 172,184 169,210 C165,240 141,260 110,260 C79,260 55,240 51,210 C48,184 63,168 63,142 C63,118 50,106 51,84 C52,54 76,32 110,32 Z"
+              d="M110,34 C148,34 178,56 180,86 C182,108 168,118 168,140 C168,166 180,182 178,206 C175,236 148,258 110,258 C72,258 45,236 42,206 C40,182 52,166 52,140 C52,118 38,108 40,86 C42,56 72,34 110,34 Z"
               fill="url(#mascotBodyMale)"
             />
             <ellipse
               className="mascot-highlight"
-              cx="80"
-              cy="76"
-              rx="28"
-              ry="38"
+              cx="78"
+              cy="80"
+              rx="32"
+              ry="36"
               fill="url(#mascotHighlight)"
             />
             <path
-              d="M110,136 L126,152 L110,168 L94,152 Z"
+              d="M110,132 L128,150 L110,168 L92,150 Z"
               fill="#d7f3f4"
               fillOpacity="0.92"
             />
             <path
-              d="M110,131 L131,152 L110,173 L89,152 Z"
+              d="M110,126 L134,150 L110,174 L86,150 Z"
               fill="none"
               stroke="#7fd0e6"
               strokeOpacity="0.5"
@@ -141,33 +148,34 @@ export default function Mascot({ gender = 'neutral', className = '' }) {
             />
           </g>
 
-          {/* ---- female: narrower waist, taller curve, soft twin accent ---- */}
+          {/* ---- female: narrow waist, pronounced flare, taller
+                 curve — a tall hourglass silhouette ---- */}
           <g className="mascot-variant mascot-variant-female">
             <path
               className="mascot-arm"
-              d="M68,112 C48,118 39,143 43,171 C46,189 58,198 69,192 C75,158 73,130 68,112 Z"
+              d="M74,108 C55,116 45,142 49,172 C52,191 63,200 73,193 C78,157 76,128 74,108 Z"
               fill="url(#mascotBodyFemale)"
             />
             <path
               className="mascot-arm"
-              d="M152,112 C172,118 181,143 177,171 C174,189 162,198 151,192 C145,158 147,130 152,112 Z"
+              d="M146,108 C165,116 175,142 171,172 C168,191 157,200 147,193 C142,157 144,128 146,108 Z"
               fill="url(#mascotBodyFemale)"
             />
             <path
               className="mascot-body"
-              d="M110,24 C136,24 155,48 155,80 C155,106 141,120 141,146 C141,174 160,190 156,218 C152,248 133,264 110,264 C87,264 68,248 64,218 C60,190 79,174 79,146 C79,120 65,106 65,80 C65,48 84,24 110,24 Z"
+              d="M110,20 C134,20 152,44 152,76 C152,102 134,116 134,148 C134,180 162,196 158,224 C154,252 133,268 110,268 C87,268 66,252 62,224 C58,196 86,180 86,148 C86,116 68,102 68,76 C68,44 86,20 110,20 Z"
               fill="url(#mascotBodyFemale)"
             />
             <ellipse
               className="mascot-highlight"
-              cx="84"
-              cy="70"
-              rx="26"
-              ry="36"
+              cx="86"
+              cy="68"
+              rx="24"
+              ry="38"
               fill="url(#mascotHighlight)"
             />
-            <circle cx="102" cy="150" r="7.5" fill="#f5f9d8" fillOpacity="0.92" />
-            <circle cx="118" cy="150" r="7.5" fill="#eaf7c9" fillOpacity="0.75" />
+            <circle cx="103" cy="152" r="7" fill="#f5f9d8" fillOpacity="0.92" />
+            <circle cx="117" cy="152" r="7" fill="#eaf7c9" fillOpacity="0.75" />
           </g>
         </svg>
       </div>

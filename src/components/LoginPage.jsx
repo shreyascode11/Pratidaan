@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Mascot from './Mascot.jsx'
-import { ArrowLeftIcon, SparkIcon } from './icons.jsx'
+import { ArrowLeftIcon, LogoMark, SparkIcon } from './icons.jsx'
 
 const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },
@@ -9,11 +9,16 @@ const GENDER_OPTIONS = [
 
 const CAPTIONS = {
   neutral: 'A soft, abstract presence that greets you every time you trade. Pick a side below to make it yours.',
-  male: 'Cooler tones, a sharper accent — that’s your Pratidaan self.',
-  female: 'Warmer tones, a softer curve — that’s your Pratidaan self.',
+  male: 'Broad and grounded, cooler tones — that’s your Pratidaan self.',
+  female: 'Tall and curved, warmer tones — that’s your Pratidaan self.',
 }
 
-export default function LoginPage({ onSubmit, onBack }) {
+/**
+ * `fullScreen` drives the pre-auth gate: no "back to browse" (there's nothing
+ * to go back to yet) and a bigger, viewport-filling stage. The same component
+ * is reused, embedded and smaller, for a signed-in user revisiting the page.
+ */
+export default function LoginPage({ onSubmit, onBack, fullScreen = false }) {
   const [mode, setMode] = useState('signup') // 'signup' | 'login'
   const [gender, setGender] = useState('neutral') // 'neutral' | 'male' | 'female'
   const [form, setForm] = useState({ name: '', email: '', password: '' })
@@ -67,16 +72,35 @@ export default function LoginPage({ onSubmit, onBack }) {
   const cls = (field) => `${inputBase} ${errors[field] ? bad : ok}`
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <button
-        onClick={onBack}
-        className="glass group mb-7 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-ink-700 transition duration-300 hover:-translate-y-0.5 hover:text-ink-900"
-      >
-        <ArrowLeftIcon className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-        Back to browse
-      </button>
+    <div
+      className={
+        fullScreen
+          ? 'flex min-h-screen flex-col items-center justify-center bg-ink-950 px-4 py-10 sm:px-6 lg:px-8'
+          : 'mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8'
+      }
+    >
+      {fullScreen ? (
+        <div className="mb-6 flex items-center gap-2.5">
+          <LogoMark className="h-9 w-9 text-mint-400 drop-shadow-sm" />
+          <span className="text-xl font-extrabold tracking-tight text-white">
+            Prati<span className="text-mint-400">daan</span>
+          </span>
+        </div>
+      ) : (
+        <button
+          onClick={onBack}
+          className="glass group mb-7 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-ink-700 transition duration-300 hover:-translate-y-0.5 hover:text-ink-900"
+        >
+          <ArrowLeftIcon className="h-4 w-4 transition group-hover:-translate-x-0.5" />
+          Back to browse
+        </button>
+      )}
 
-      <div className="animate-rise relative isolate overflow-hidden rounded-[2.5rem] bg-ink-950 p-6 sm:p-10 lg:p-14">
+      <div
+        className={`animate-rise relative isolate w-full overflow-hidden rounded-[2.5rem] bg-ink-950 p-6 sm:p-10 lg:p-16 ${
+          fullScreen ? 'max-w-6xl' : ''
+        }`}
+      >
         {/* Dark ambient stage — scoped to this card, not the whole page. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#1c2823_0%,transparent_60%),linear-gradient(160deg,#0e100f_0%,#161c18_55%,#0a0c0b_100%)]" />
@@ -85,7 +109,7 @@ export default function LoginPage({ onSubmit, onBack }) {
           <div className="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-mint-300/10 blur-[100px]" />
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
           {/* Mascot side */}
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <span className="glass-night inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold text-mint-200">
@@ -93,7 +117,7 @@ export default function LoginPage({ onSubmit, onBack }) {
               Your Pratidaan avatar
             </span>
 
-            <Mascot gender={gender} className="mt-6 w-52 sm:w-64 lg:w-80" />
+            <Mascot gender={gender} className="mt-6 w-60 sm:w-80 lg:w-88" />
 
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/60 lg:max-w-sm">
               {CAPTIONS[gender]}

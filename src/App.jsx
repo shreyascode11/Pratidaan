@@ -17,6 +17,8 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login'
+  // Gates the whole app: nothing else renders until the user signs up/logs in.
+  const [authed, setAuthed] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
   const [requested, setRequested] = useState([])
   const [newIds, setNewIds] = useState(new Set())
@@ -91,6 +93,7 @@ export default function App() {
   }, [])
 
   const submitLogin = useCallback((payload) => {
+    setAuthed(true)
     setView('browse')
     setToast(
       payload.mode === 'signup'
@@ -111,15 +114,20 @@ export default function App() {
     return () => clearTimeout(t)
   }, [toast])
 
-  // Escape backs out of detail / post views.
+  // Escape backs out of detail / post views (not the login gate itself —
+  // there's nothing to back out to before signing up).
   useEffect(() => {
-    if (view === 'browse') return
+    if (view === 'browse' || view === 'login') return
     const onKey = (e) => e.key === 'Escape' && goBrowse()
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [view, goBrowse])
 
   // ---- render ------------------------------------------------------------
+  if (!authed) {
+    return <LoginPage onSubmit={submitLogin} fullScreen />
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <AmbientBackground />
