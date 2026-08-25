@@ -112,6 +112,19 @@
       0 8px 20px -10px rgb(16 24 20 / 0.5),
       0 20px 44px -22px rgb(16 24 20 / 0.55);
   }
+
+  /* Dark glass, for panels that sit on the login page's night backdrop
+     rather than the light canvas — same recipe, inverted base. */
+  .glass-night {
+    background: color-mix(in oklab, var(--color-ink-950) 60%, transparent);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid color-mix(in oklab, white 14%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 10%, transparent),
+      0 20px 60px -24px rgb(0 0 0 / 0.65),
+      0 0 0 1px color-mix(in oklab, var(--color-mint-500) 10%, transparent);
+  }
 }
 
 @layer utilities {
@@ -166,6 +179,76 @@
   .stagger > *:nth-child(8) { animation-delay: 0.3s }
   .stagger > *:nth-child(n + 9) { animation-delay: 0.34s }
 
+  /* ---- Mascot ---- */
+
+  /* Continuous idle life: a slow float + a barely-there tilt, so the figure
+     never looks static even with no gender selected yet. */
+  .mascot-float {
+    animation: mascot-float 6.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    transform-origin: 50% 100%;
+    filter: drop-shadow(0 0 36px rgba(94, 199, 146, 0.32))
+      drop-shadow(0 18px 30px rgba(0, 0, 0, 0.35));
+  }
+  @keyframes mascot-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-0.6deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(0.6deg);
+    }
+  }
+
+  .mascot-glow {
+    animation: mascot-glow-pulse 5s ease-in-out infinite;
+    transform-origin: 110px 150px;
+  }
+  @keyframes mascot-glow-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+  }
+
+  .mascot-shadow {
+    animation: mascot-shadow-pulse 6.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    transform-origin: 110px 278px;
+  }
+  @keyframes mascot-shadow-pulse {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 0.16;
+      transform: scaleX(0.82);
+    }
+  }
+
+  /* Gender variants share one coordinate space and cross-fade — far more
+     reliable across browsers than CSS-transitioning between two path `d`
+     strings, which doesn't interpolate at all. */
+  .mascot-variant {
+    opacity: 0;
+    transform: scale(0.94);
+    transform-origin: 110px 146px;
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .mascot[data-gender='neutral'] .mascot-variant-neutral,
+  .mascot[data-gender='male'] .mascot-variant-male,
+  .mascot[data-gender='female'] .mascot-variant-female {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-rise,
     .animate-pop,
@@ -174,6 +257,11 @@
     }
     .lift:hover {
       transform: none;
+    }
+    .mascot-float,
+    .mascot-glow,
+    .mascot-shadow {
+      animation: none;
     }
   }
 }

@@ -5,6 +5,7 @@ import Footer from './components/Footer.jsx'
 import Hero from './components/Hero.jsx'
 import ItemDetail from './components/ItemDetail.jsx'
 import ItemGrid from './components/ItemGrid.jsx'
+import LoginPage from './components/LoginPage.jsx'
 import Navbar from './components/Navbar.jsx'
 import PostItemForm from './components/PostItemForm.jsx'
 import { CATEGORIES, SEED_ITEMS } from './data/seed.js'
@@ -15,7 +16,7 @@ export default function App() {
   const [items, setItems] = useState(SEED_ITEMS)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
-  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail'
+  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login'
   const [selectedId, setSelectedId] = useState(null)
   const [requested, setRequested] = useState([])
   const [newIds, setNewIds] = useState(new Set())
@@ -64,6 +65,7 @@ export default function App() {
   }, [])
 
   const openPost = useCallback(() => setView('post'), [])
+  const openLogin = useCallback(() => setView('login'), [])
 
   const addItem = useCallback((draft) => {
     const item = {
@@ -86,6 +88,15 @@ export default function App() {
   const resetFilters = useCallback(() => {
     setQuery('')
     setCategory('All')
+  }, [])
+
+  const submitLogin = useCallback((payload) => {
+    setView('browse')
+    setToast(
+      payload.mode === 'signup'
+        ? `Welcome to Pratidaan, ${payload.name.split(' ')[0]}!`
+        : 'Welcome back!',
+    )
   }, [])
 
   // Scroll to top whenever the view changes — feels like real navigation.
@@ -120,6 +131,7 @@ export default function App() {
         }}
         onPost={openPost}
         onHome={goBrowse}
+        onLogin={openLogin}
       />
 
       <main className="flex-1">
@@ -183,6 +195,10 @@ export default function App() {
             onRequest={requestItem}
             onBack={goBrowse}
           />
+        )}
+
+        {view === 'login' && (
+          <LoginPage onSubmit={submitLogin} onBack={goBrowse} />
         )}
       </main>
 

@@ -101,6 +101,15 @@ export function UploadIcon(props) {
   )
 }
 
+export function UserIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <circle cx="12" cy="8" r="3.4" />
+      <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" />
+    </svg>
+  )
+}
+
 export function LogoMark(props) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
