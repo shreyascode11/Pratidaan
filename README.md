@@ -1,6 +1,10 @@
 <div align="center">
   <h1>🎓 Pratidaan</h1>
   <p><b>A Next-Generation Campus Marketplace Ecosystem</b></p>
+  <p>Made by <b>Shreyas</b></p>
+  <p>
+    <a href="https://pratidaan.vercel.app/"><b>🌐 View Live Demo</b></a>
+  </p>
   <p>
     <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 19" /></a>
     <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite 8" /></a>
@@ -8,11 +12,6 @@
     <a href="https://vercel.com/"><img src="https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white" alt="Vercel" /></a>
   </p>
 </div>
-
----
-
-## 📖 GitHub "About" Section (Copy & Paste this into your repo!)
-> *An ultra-fast, entirely in-memory campus marketplace built with React 19 and Tailwind v4. Features a stunning glassmorphic UI, dynamic shopping carts, simulated AI chats, and a bento-grid architecture for seamless student exchanges.*
 
 ---
 
