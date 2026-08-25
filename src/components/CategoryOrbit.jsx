@@ -25,12 +25,12 @@ import {
 // anything past it goes negative, pushing an icon above the orbit box's own
 // top edge where the section's overflow-hidden silently clips it away.
 const ORBIT_ICONS = [
-  { category: 'Electronics', Icon: LaptopIcon, angle: 15, radiusPct: 30, duration: 6.5, delay: 0 },
-  { category: 'Tickets', Icon: TicketIcon, angle: 30, radiusPct: 23, duration: 5.5, delay: 0.9 },
-  { category: 'Skills', Icon: GraduationCapIcon, angle: 44, radiusPct: 32, duration: 7, delay: 0.4 },
-  { category: 'Notes', Icon: NotebookIcon, angle: 58, radiusPct: 21, duration: 6, delay: 1.4 },
-  { category: 'Freebies', Icon: GiftIcon, angle: 71, radiusPct: 29, duration: 6.8, delay: 0.2 },
-  { category: 'Textbooks', Icon: BookIcon, angle: 83, radiusPct: 18, duration: 5.8, delay: 1.1 },
+  { category: 'Electronics', Icon: LaptopIcon, angle: 15, radiusPct: 44, duration: 6.5, delay: 0 },
+  { category: 'Tickets', Icon: TicketIcon, angle: 30, radiusPct: 34, duration: 5.5, delay: 0.9 },
+  { category: 'Skills', Icon: GraduationCapIcon, angle: 44, radiusPct: 47, duration: 7, delay: 0.4 },
+  { category: 'Notes', Icon: NotebookIcon, angle: 58, radiusPct: 31, duration: 6, delay: 1.4 },
+  { category: 'Freebies', Icon: GiftIcon, angle: 71, radiusPct: 43, duration: 6.8, delay: 0.2 },
+  { category: 'Textbooks', Icon: BookIcon, angle: 83, radiusPct: 27, duration: 5.8, delay: 1.1 },
 ]
 
 const RAD = Math.PI / 180

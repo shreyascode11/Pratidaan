@@ -11,6 +11,12 @@ import PostItemForm from './components/PostItemForm.jsx'
 import { CATEGORIES, SEED_ITEMS } from './data/seed.js'
 import { CheckIcon, CloseIcon } from './components/icons.jsx'
 
+const REQUEST_TOAST_VERB = {
+  Sell: 'Request',
+  Exchange: 'Swap request',
+  Giveaway: 'Claim',
+}
+
 export default function App() {
   // ---- state -------------------------------------------------------------
   const [items, setItems] = useState(SEED_ITEMS)
@@ -50,10 +56,6 @@ export default function App() {
     () => items.filter((i) => i.type === 'Giveaway').length,
     [items],
   )
-  const swapCount = useMemo(
-    () => items.filter((i) => i.type === 'Exchange').length,
-    [items],
-  )
 
   // ---- actions -----------------------------------------------------------
   const goBrowse = useCallback(() => {
@@ -83,9 +85,21 @@ export default function App() {
     setToast(`“${item.title}” is live on the board.`)
   }, [])
 
-  const requestItem = useCallback((id) => {
-    setRequested((prev) => (prev.includes(id) ? prev : [...prev, id]))
-  }, [])
+  // Mirrors addItem/submitLogin's pattern: give a toast and actually take the
+  // user somewhere, rather than just swapping the button for inline text and
+  // leaving them stranded on the same page.
+  const requestItem = useCallback(
+    (id) => {
+      setRequested((prev) => (prev.includes(id) ? prev : [...prev, id]))
+      const item = items.find((i) => i.id === id)
+      if (item) {
+        const verb = REQUEST_TOAST_VERB[item.type] ?? 'Request'
+        setToast(`${verb} sent to ${item.poster.split(' ')[0]}!`)
+      }
+      goBrowse()
+    },
+    [items, goBrowse],
+  )
 
   const resetFilters = useCallback(() => {
     setQuery('')
@@ -161,7 +175,6 @@ export default function App() {
             <Hero
               total={items.length}
               freeCount={freeCount}
-              swapCount={swapCount}
               onPost={openPost}
               onSelectCategory={selectCategoryFromHero}
             />

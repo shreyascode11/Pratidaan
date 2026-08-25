@@ -10,6 +10,12 @@ const ACTION_LABEL = {
   Giveaway: 'Claim this item',
 }
 
+const REQUEST_NOUN = {
+  Sell: 'request',
+  Exchange: 'swap request',
+  Giveaway: 'claim',
+}
+
 export default function ItemDetail({ item, requested, onRequest, onBack }) {
   if (!item) return null
 
@@ -88,9 +94,13 @@ export default function ItemDetail({ item, requested, onRequest, onBack }) {
 
           <div className="mt-6">
             {requested ? (
+              // Clicking always sends the user back to browse with a toast
+              // (see App.jsx's requestItem), so this branch only shows up if
+              // they navigate back to an item they'd already requested —
+              // not as feedback for the click itself.
               <div
                 role="status"
-                className="animate-pop rounded-2xl border border-mint-300/60 bg-mint-100/80 p-4 backdrop-blur"
+                className="rounded-2xl border border-mint-300/60 bg-mint-100/80 p-4 backdrop-blur"
               >
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mint-500">
@@ -98,11 +108,12 @@ export default function ItemDetail({ item, requested, onRequest, onBack }) {
                   </span>
                   <div>
                     <p className="text-sm font-extrabold text-mint-900">
-                      Request sent to {item.poster.split(' ')[0]}
+                      You already sent {item.poster.split(' ')[0]} a{' '}
+                      {REQUEST_NOUN[item.type] ?? 'request'}
                     </p>
                     <p className="mt-1 text-sm leading-relaxed text-mint-800/80">
-                      They&rsquo;ll get a notification and can reply to arrange a
-                      pickup at {item.location || 'a spot on campus'}.
+                      They can reply to arrange a pickup at{' '}
+                      {item.location || 'a spot on campus'}.
                     </p>
                   </div>
                 </div>
