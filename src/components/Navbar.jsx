@@ -1,6 +1,6 @@
-import { LogoMark, PlusIcon, SearchIcon, CloseIcon, UserIcon } from "./icons.jsx";
+import { LogoMark, PlusIcon, SearchIcon, CloseIcon, UserIcon, CartIcon, HeartIcon } from "./icons.jsx";
 
-export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin }) {
+export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin, onCart, onWishlist, cartCount = 0, wishlistCount = 0 }) {
   return (
     <div className="sticky top-0 z-40">
       {/* Blurred strip so page content scrolling past doesn't peek above the
@@ -47,12 +47,39 @@ export default function Navbar({ query, onQueryChange, onPost, onHome, onLogin }
 
             <div className="ml-auto flex items-center gap-2 sm:ml-0 sm:gap-3">
               <button
+                onClick={onWishlist}
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-900/10 bg-white/55 text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85"
+                aria-label="Wishlist"
+              >
+                <HeartIcon className="h-4.5 w-4.5" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-mint-500 text-[9px] font-bold text-mint-950">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+              
+              <button
+                onClick={onCart}
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-900/10 bg-white/55 text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85"
+                aria-label="Cart"
+              >
+                <CartIcon className="h-4.5 w-4.5" />
+                {cartCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-mint-500 text-[9px] font-bold text-mint-950">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+              
+              <button
                 onClick={onLogin}
                 className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 bg-white/55 px-4 py-3 text-sm font-extrabold text-ink-800 transition duration-300 hover:-translate-y-0.5 hover:bg-white/85 sm:px-5"
               >
                 <UserIcon className="h-4 w-4" strokeWidth={2.2} />
                 <span className="hidden sm:inline">Log in</span>
               </button>
+              
               <button
                 onClick={onPost}
                 className="glow-mint inline-flex items-center gap-1.5 rounded-full bg-mint-500 px-4 py-3 text-sm font-extrabold text-mint-950 transition duration-300 hover:-translate-y-0.5 hover:bg-mint-400 active:translate-y-0 sm:px-5"

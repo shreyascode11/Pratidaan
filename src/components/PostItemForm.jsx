@@ -221,7 +221,7 @@ export default function PostItemForm({ onSubmit, onCancel }) {
               >
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-extrabold text-ink-400">
-                    $
+                    ₹
                   </span>
                   <input
                     id="price"

@@ -23,7 +23,7 @@ export const SEED_ITEMS = [
     title: 'Organic Chemistry as a Second Language (3rd Ed.)',
     category: 'Textbooks',
     type: 'Sell',
-    price: 28,
+    price: 800,
     condition: 'Good — some highlighting',
     description:
       'Klein’s first-semester survival guide. Saved me in CHEM 2410 — margins have my notes on mechanisms.',
@@ -55,7 +55,7 @@ export const SEED_ITEMS = [
     title: 'Stewart, Calculus: Early Transcendentals (8th)',
     category: 'Textbooks',
     type: 'Sell',
-    price: 35,
+    price: 1200,
     condition: 'Fair — cover scuffed',
     description:
       'The standard MATH 1210/1220 brick. Cover is scuffed but every page is intact and readable.',
@@ -71,12 +71,12 @@ export const SEED_ITEMS = [
     title: 'TI-84 Plus CE Graphing Calculator (teal)',
     category: 'Electronics',
     type: 'Sell',
-    price: 65,
+    price: 8000,
     condition: 'Excellent',
     description:
       'Charger and slide cover included. Cleared of all my programs, ready for your exams.',
     details:
-      'Color-screen TI-84 Plus CE in teal. Holds a charge for weeks of normal use. Includes the USB charging cable and the original slide case. Memory has been fully reset, so it is exam-ready. Retails around $130 new — this one has two semesters on it.',
+      'Color-screen TI-84 Plus CE in teal. Holds a charge for weeks of normal use. Includes the USB charging cable and the original slide case. Memory has been fully reset, so it is exam-ready. Retails around ₹11,000 new — this one has two semesters on it.',
     image: img('photo-1587145820266-a5951ee6f620'),
     poster: 'Owen Fitzgerald',
     location: 'Engineering Hall',
@@ -87,7 +87,7 @@ export const SEED_ITEMS = [
     title: 'Sony WH-1000XM4 Noise-Cancelling Headphones',
     category: 'Electronics',
     type: 'Sell',
-    price: 140,
+    price: 16000,
     condition: 'Very good',
     description:
       'Genuinely the reason I survived the third floor of the library. Case and cable included.',
@@ -119,12 +119,12 @@ export const SEED_ITEMS = [
     title: 'Spring Fest — two floor tickets, Saturday',
     category: 'Tickets',
     type: 'Sell',
-    price: 45,
+    price: 1500,
     condition: 'Digital transfer',
     description:
       'Selling at face value, no markup. Group project deadline ate my weekend.',
     details:
-      'Two general-admission floor tickets for Saturday night at the amphitheater. Face value was $45 each and that is exactly what I am asking — I would rather they get used than scalped. Transfer goes through the official app, takes about a minute, and I will do it while we are both on the call so nobody gets burned.',
+      'Two general-admission floor tickets for Saturday night at the amphitheater. Face value was ₹500 each and that is exactly what I am asking — I would rather they get used than scalped. Transfer goes through the official app, takes about a minute, and I will do it while we are both on the call so nobody gets burned.',
     image: img('photo-1533174072545-7a4b6ad7a6c3'),
     poster: 'Jamal Osei',
     location: 'Transfer via app',

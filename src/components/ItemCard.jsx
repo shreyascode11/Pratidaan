@@ -1,7 +1,8 @@
 import Avatar from './Avatar.jsx'
 import SmartImage from './SmartImage.jsx'
 import TypeBadge from './TypeBadge.jsx'
-import { priceLabel, timeAgo } from '../utils/format.js'
+import { priceLabel, timeAgo, sellerRating } from '../utils/format.js'
+import { HeartIcon } from './icons.jsx'
 
 function PriceChip({ item, onDark = false }) {
   return (
@@ -16,7 +17,7 @@ function PriceChip({ item, onDark = false }) {
 }
 
 /** Wide bento tile: full-bleed image with the copy laid over it. */
-function FeatureCard({ item, onView, isNew }) {
+function FeatureCard({ item, onView, isNew, inWishlist, onToggleWishlist }) {
   return (
     <article
       onClick={() => onView(item.id)}
@@ -41,10 +42,21 @@ function FeatureCard({ item, onView, isNew }) {
               Just posted
             </span>
           )}
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-mint-300">
-            {item.category}
-          </p>
-          <h3 className="mt-2 max-w-lg text-2xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-3xl">
+          <div className="flex items-start justify-between">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-mint-300">
+              {item.category}
+            </p>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleWishlist(item.id)
+              }}
+              className={`p-2 rounded-full transition-colors ${inWishlist ? 'text-red-400 bg-white/10' : 'text-white/50 hover:text-white/90 hover:bg-white/10'}`}
+            >
+              <HeartIcon className="h-5 w-5" filled={inWishlist} />
+            </button>
+          </div>
+          <h3 className="mt-1 max-w-lg text-2xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-3xl">
             {item.title}
           </h3>
           <p className="mt-2 line-clamp-2 max-w-md text-sm leading-relaxed text-white/80">
@@ -74,7 +86,7 @@ function FeatureCard({ item, onView, isNew }) {
 }
 
 /** Standard bento tile: image on top, frosted body beneath. */
-function StandardCard({ item, onView, isNew }) {
+function StandardCard({ item, onView, isNew, inWishlist, onToggleWishlist }) {
   return (
     <article
       onClick={() => onView(item.id)}
@@ -98,9 +110,20 @@ function StandardCard({ item, onView, isNew }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-mint-700">
-          {item.category}
-        </p>
+        <div className="flex items-start justify-between">
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-mint-700">
+            {item.category}
+          </p>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleWishlist(item.id)
+            }}
+            className={`p-1 -mt-1 -mr-1 rounded-full transition-colors ${inWishlist ? 'text-red-500' : 'text-ink-300 hover:text-ink-600'}`}
+          >
+            <HeartIcon className="h-4.5 w-4.5" filled={inWishlist} />
+          </button>
+        </div>
         <h3 className="mt-1.5 line-clamp-2 text-base font-extrabold leading-snug tracking-tight text-ink-900 transition group-hover:text-mint-700">
           {item.title}
         </h3>
@@ -112,7 +135,9 @@ function StandardCard({ item, onView, isNew }) {
           <Avatar name={item.poster} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-bold text-ink-800">{item.poster}</p>
-            <p className="text-[11px] text-ink-400">{timeAgo(item.postedAt)}</p>
+            <p className="text-[10px] font-medium text-ink-500 flex items-center gap-1">
+              <span className="text-yellow-500">★</span> {sellerRating(item.poster).rating} • {timeAgo(item.postedAt)}
+            </p>
           </div>
           <button
             onClick={(e) => {
@@ -129,7 +154,7 @@ function StandardCard({ item, onView, isNew }) {
   )
 }
 
-export default function ItemCard({ item, onView, isNew = false, variant = 'standard' }) {
+export default function ItemCard({ item, onView, isNew = false, variant = 'standard', inWishlist, onToggleWishlist }) {
   const Card = variant === 'feature' ? FeatureCard : StandardCard
-  return <Card item={item} onView={onView} isNew={isNew} />
+  return <Card item={item} onView={onView} isNew={isNew} inWishlist={inWishlist} onToggleWishlist={onToggleWishlist} />
 }

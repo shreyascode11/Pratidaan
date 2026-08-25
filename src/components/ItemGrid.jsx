@@ -8,7 +8,7 @@ import ItemCard from './ItemCard.jsx'
  */
 const isFeature = (index) => index % 7 === 0
 
-export default function ItemGrid({ items, onView, newIds, ...emptyProps }) {
+export default function ItemGrid({ items, onView, newIds, wishlist = [], onToggleWishlist, ...emptyProps }) {
   if (items.length === 0) return <EmptyState {...emptyProps} />
 
   return (
@@ -20,6 +20,8 @@ export default function ItemGrid({ items, onView, newIds, ...emptyProps }) {
           onView={onView}
           isNew={newIds.has(item.id)}
           variant={isFeature(i) ? 'feature' : 'standard'}
+          inWishlist={wishlist.includes(item.id)}
+          onToggleWishlist={onToggleWishlist}
         />
       ))}
     </div>

@@ -39,8 +39,27 @@ export function timeAgo(iso) {
 }
 
 /** Sell items show a price; exchanges and giveaways show their intent. */
+export function formatPrice(amount) {
+  if (amount == null || amount === '') return ''
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount)
+}
+
 export function priceLabel(item) {
+  if (item.type === 'Exchange') return 'Exchange'
   if (item.type === 'Giveaway') return 'Free'
-  if (item.type === 'Exchange') return 'Swap'
-  return item.price != null && item.price !== '' ? `$${item.price}` : 'Ask'
+  if (!item.price) return 'Ask'
+  return formatPrice(item.price)
+}
+
+/** Deterministic star rating based on user name (between 4.0 and 5.0) */
+export function sellerRating(name = '') {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0
+  const rating = 4.0 + (hash % 11) / 10 // 4.0 to 5.0
+  const reviews = 5 + (hash % 50)       // 5 to 54 reviews
+  return { rating: rating.toFixed(1), reviews }
 }

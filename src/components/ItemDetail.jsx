@@ -1,8 +1,8 @@
 import Avatar from './Avatar.jsx'
 import SmartImage from './SmartImage.jsx'
 import TypeBadge from './TypeBadge.jsx'
-import { ArrowLeftIcon, ChatIcon, CheckIcon, MapPinIcon, TagIcon } from './icons.jsx'
-import { priceLabel, timeAgo } from '../utils/format.js'
+import { ArrowLeftIcon, ChatIcon, CheckIcon, MapPinIcon, TagIcon, CartIcon, HeartIcon } from './icons.jsx'
+import { priceLabel, timeAgo, sellerRating } from '../utils/format.js'
 
 const ACTION_LABEL = {
   Sell: 'Request this item',
@@ -16,7 +16,7 @@ const REQUEST_NOUN = {
   Giveaway: 'claim',
 }
 
-export default function ItemDetail({ item, requested, onRequest, onBack, onOpenChat }) {
+export default function ItemDetail({ item, requested, onRequest, onBack, onOpenChat, inCart, onToggleCart, inWishlist, onToggleWishlist }) {
   if (!item) return null
 
   return (
@@ -86,9 +86,14 @@ export default function ItemDetail({ item, requested, onRequest, onBack, onOpenC
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink-400">
                 Posted by
               </p>
-              <p className="truncate text-lg font-extrabold tracking-tight text-ink-900">
-                {item.poster}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="truncate text-lg font-extrabold tracking-tight text-ink-900">
+                  {item.poster}
+                </p>
+                <span className="text-xs font-bold text-ink-500 bg-white border border-ink-200 rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <span className="text-yellow-500">★</span> {sellerRating(item.poster).rating}
+                </span>
+              </div>
             </div>
             <button
               onClick={() => onOpenChat(item.id)}
@@ -126,12 +131,30 @@ export default function ItemDetail({ item, requested, onRequest, onBack, onOpenC
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => onRequest(item.id)}
-                className="glow-ink w-full rounded-2xl bg-ink-900 px-6 py-4.5 text-base font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-ink-800 active:translate-y-0"
-              >
-                {ACTION_LABEL[item.type] ?? 'Request this item'}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => onRequest(item.id)}
+                  className="glow-ink flex-1 rounded-2xl bg-ink-900 px-6 py-4.5 text-base font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-ink-800 active:translate-y-0"
+                >
+                  {ACTION_LABEL[item.type] ?? 'Request this item'}
+                </button>
+                {item.type === 'Sell' && (
+                  <button
+                    onClick={() => onToggleCart()}
+                    className={`flex items-center justify-center rounded-2xl px-6 py-4.5 transition duration-300 hover:-translate-y-0.5 ${inCart ? 'bg-mint-500 text-mint-950 border border-mint-600' : 'bg-white border border-ink-200 text-ink-900 hover:bg-ink-50'}`}
+                    aria-label={inCart ? "Remove from cart" : "Add to cart"}
+                  >
+                    <CartIcon className="h-6 w-6" />
+                  </button>
+                )}
+                <button
+                  onClick={() => onToggleWishlist()}
+                  className={`flex items-center justify-center rounded-2xl px-6 py-4.5 transition duration-300 hover:-translate-y-0.5 ${inWishlist ? 'bg-red-50 border border-red-200 text-red-500' : 'bg-white border border-ink-200 text-ink-400 hover:text-red-400 hover:bg-red-50'}`}
+                  aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  <HeartIcon className="h-6 w-6" filled={inWishlist} />
+                </button>
+              </div>
             )}
             <p className="mt-3 text-center text-xs font-medium text-ink-400">
               Always meet in a public spot on campus.

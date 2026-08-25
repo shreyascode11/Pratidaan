@@ -12,6 +12,7 @@ import PostItemForm from './components/PostItemForm.jsx'
 import { CATEGORIES, SEED_ITEMS } from './data/seed.js'
 import { CheckIcon, CloseIcon } from './components/icons.jsx'
 import { generateAutoReply } from './utils/chatReplies.js'
+import { formatPrice } from './utils/format.js'
 
 const REQUEST_TOAST_VERB = {
   Sell: 'Request',
@@ -24,7 +25,9 @@ export default function App() {
   const [items, setItems] = useState(SEED_ITEMS)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
-  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login'
+  const [view, setView] = useState('browse') // 'browse' | 'post' | 'detail' | 'login' | 'cart' | 'wishlist'
+  const [cart, setCart] = useState([])
+  const [wishlist, setWishlist] = useState([])
   // Gates the whole app: nothing else renders until the user signs up/logs in.
   const [authed, setAuthed] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
@@ -83,6 +86,20 @@ export default function App() {
 
   const openPost = useCallback(() => setView('post'), [])
   const openLogin = useCallback(() => setView('login'), [])
+  const openCart = useCallback(() => setView('cart'), [])
+  const openWishlist = useCallback(() => setView('wishlist'), [])
+
+  const toggleWishlist = useCallback((id) => {
+    setWishlist((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    )
+  }, [])
+
+  const toggleCart = useCallback((id) => {
+    setCart((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    )
+  }, [])
 
   const addItem = useCallback((draft) => {
     const item = {
@@ -210,6 +227,10 @@ export default function App() {
         }}
         onPost={openPost}
         onHome={goBrowse}
+        onCart={openCart}
+        onWishlist={openWishlist}
+        cartCount={cart.length}
+        wishlistCount={wishlist.length}
         onLogin={openLogin}
       />
 
@@ -258,6 +279,8 @@ export default function App() {
                 query={query}
                 category={category}
                 onReset={resetFilters}
+                wishlist={wishlist}
+                onToggleWishlist={toggleWishlist}
               />
             </section>
           </>
@@ -274,7 +297,69 @@ export default function App() {
             onRequest={requestItem}
             onBack={goBrowse}
             onOpenChat={openChat}
+            inCart={cart.includes(selectedId)}
+            onToggleCart={() => toggleCart(selectedId)}
+            inWishlist={wishlist.includes(selectedId)}
+            onToggleWishlist={() => toggleWishlist(selectedId)}
           />
+        )}
+
+        {view === 'cart' && (
+          <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+            <h2 className="text-3xl font-extrabold text-ink-900 mb-8">Your Cart</h2>
+            {cart.length === 0 ? (
+              <p className="text-ink-500">Your cart is empty.</p>
+            ) : (
+              <div className="space-y-4">
+                {cart.map(id => {
+                  const item = items.find(i => i.id === id)
+                  if (!item) return null
+                  return (
+                    <div key={id} className="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-ink-200">
+                      <img src={item.image} alt={item.title} className="w-20 h-20 object-cover rounded-xl" />
+                      <div className="flex-1">
+                        <h3 className="font-extrabold text-lg text-ink-900">{item.title}</h3>
+                        <p className="text-sm text-ink-500">{item.price ? formatPrice(item.price) : 'Ask'}</p>
+                      </div>
+                      <button onClick={() => toggleCart(id)} className="text-sm font-bold text-red-500 hover:text-red-700">Remove</button>
+                    </div>
+                  )
+                })}
+                <div className="mt-8 border-t border-ink-200 pt-6 flex justify-between items-center">
+                  <span className="text-xl font-bold text-ink-900">Total:</span>
+                  <span className="text-2xl font-extrabold text-mint-700">
+                    {formatPrice(cart.reduce((sum, id) => {
+                      const item = items.find(i => i.id === id)
+                      return sum + (item && item.price ? Number(item.price) : 0)
+                    }, 0))}
+                  </span>
+                </div>
+                <button className="w-full mt-6 bg-mint-500 text-mint-950 font-extrabold py-4 rounded-2xl hover:bg-mint-400 transition">
+                  Proceed to Checkout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {view === 'wishlist' && (
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+            <h2 className="text-3xl font-extrabold text-ink-900 mb-8">Your Wishlist</h2>
+            {wishlist.length === 0 ? (
+              <p className="text-ink-500">Your wishlist is empty.</p>
+            ) : (
+              <ItemGrid
+                items={items.filter(i => wishlist.includes(i.id))}
+                onView={openDetail}
+                newIds={newIds}
+                query=""
+                category="All"
+                onReset={() => {}}
+                wishlist={wishlist}
+                onToggleWishlist={toggleWishlist}
+              />
+            )}
+          </div>
         )}
 
         {view === 'login' && (
