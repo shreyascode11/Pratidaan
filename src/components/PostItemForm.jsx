@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import SmartImage from './SmartImage.jsx'
 import { ArrowLeftIcon, UploadIcon } from './icons.jsx'
 import { CATEGORIES } from '../data/seed.js'
+import { generateDescription } from '../utils/generateDescription.js'
 
 const TYPE_OPTIONS = [
   { value: 'Sell', label: 'Sell', hint: 'Set a price' },
@@ -78,6 +79,50 @@ export default function PostItemForm({ onSubmit, onCancel }) {
     setForm((f) => ({ ...f, [field]: value }))
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
   }
+
+  // ---- AI description assist ----
+  // Optional and non-blocking: the field works fine if this is never touched,
+  // and a failed/unavailable AI call falls back to a template rather than
+  // leaving the button stuck or the field empty.
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiSource, setAiSource] = useState(null) // null | 'ai' | 'template'
+  const [aiNotice, setAiNotice] = useState(null)
+
+  function handleDescriptionChange(e) {
+    set('description')(e)
+    if (aiSource) setAiSource(null) // caption only applies to generated text
+  }
+
+  async function handleGenerateDescription() {
+    if (!form.title.trim()) {
+      setAiNotice('Add a title first so there’s something to describe.')
+      return
+    }
+    setAiNotice(null)
+    setAiLoading(true)
+    try {
+      const { text, source } = await generateDescription({
+        title: form.title.trim(),
+        category: form.category,
+        type: form.type,
+      })
+      setForm((f) => ({ ...f, description: text }))
+      setAiSource(source)
+      setErrors((prev) => (prev.description ? { ...prev, description: undefined } : prev))
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  // Field already shows `error` over `hint`, so this only surfaces once any
+  // validation error on the field is cleared.
+  const descriptionHint =
+    aiNotice ??
+    (aiSource === 'ai'
+      ? 'Generated with AI — feel free to edit it.'
+      : aiSource === 'template'
+        ? 'Drafted for you — feel free to edit it.'
+        : undefined)
 
   function validate() {
     const next = {}
@@ -194,12 +239,34 @@ export default function PostItemForm({ onSubmit, onCancel }) {
             )}
           </div>
 
-          <Field label="Description" htmlFor="description" error={errors.description}>
+          <Field
+            label="Description"
+            htmlFor="description"
+            error={errors.description}
+            hint={descriptionHint}
+            labelExtra={
+              <button
+                type="button"
+                onClick={handleGenerateDescription}
+                disabled={aiLoading}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-mint-300/60 bg-mint-100/70 px-3 py-1.5 text-xs font-extrabold text-mint-800 transition duration-300 hover:-translate-y-0.5 hover:bg-mint-200/80 disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0"
+              >
+                {aiLoading ? (
+                  <>
+                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-mint-700 border-t-transparent" />
+                    Generating…
+                  </>
+                ) : (
+                  <>✨ {form.description.trim() ? 'Regenerate' : 'Generate with AI'}</>
+                )}
+              </button>
+            }
+          >
             <textarea
               id="description"
               rows={4}
               value={form.description}
-              onChange={set('description')}
+              onChange={handleDescriptionChange}
               placeholder="Condition, why you're posting it, where you can meet…"
               className={`${cls('description')} resize-y`}
             />
@@ -341,15 +408,15 @@ export default function PostItemForm({ onSubmit, onCancel }) {
   )
 }
 
-function Field({ label, htmlFor, error, hint, children }) {
+function Field({ label, htmlFor, error, hint, labelExtra, children }) {
   return (
     <div>
-      <label
-        htmlFor={htmlFor}
-        className="mb-2.5 block text-sm font-extrabold text-ink-800"
-      >
-        {label}
-      </label>
+      <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
+        <label htmlFor={htmlFor} className="block text-sm font-extrabold text-ink-800">
+          {label}
+        </label>
+        {labelExtra}
+      </div>
       {children}
       {error ? (
         <p className="mt-2 text-xs font-bold text-rose-600">{error}</p>

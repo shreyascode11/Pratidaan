@@ -59,6 +59,7 @@ src/
   index.css                  theme tokens + .glass / .glow / .lift utilities
   data/seed.js               15 seed listings + category/type constants
   utils/format.js            initials, avatar colours, relative dates, price labels
+  utils/generateDescription.js  "Generate with AI" — template generator + optional OpenAI call
   components/
     AmbientBackground.jsx    fixed blurred colour field the glass refracts
     Navbar.jsx               floating glass bar, live search, "Post an Item"
@@ -67,7 +68,7 @@ src/
     ItemGrid.jsx             bento grid (row spans + wide feature tiles)
     ItemCard.jsx             feature (image overlay) + standard (glass body)
     ItemDetail.jsx           detail view + request confirmation
-    PostItemForm.jsx         new-listing form with validation
+    PostItemForm.jsx         new-listing form with validation, image upload, AI description
     SmartImage.jsx           image with loading + broken-URL fallback
     EmptyState.jsx           no-results state
     TypeBadge.jsx            Sell / Exchange / Giveaway badge
@@ -110,6 +111,33 @@ A listing looks like:
   columns as a wide feature tile. Uniform row spans plus `grid-flow-row-dense`
   means the grid never leaves holes, whatever the filtered count is.
 - Motion respects `prefers-reduced-motion`.
+
+## AI-assisted descriptions
+
+The "Post an Item" form has a **✨ Generate with AI** button next to the
+Description field. It sends the listing's title, category, and type into
+`utils/generateDescription.js` and fills in a 1-2 sentence draft the user can
+edit or ignore entirely — the field works exactly the same without it.
+
+By default (no setup needed) it uses a rule-based template generator: a small
+pool of category- and type-aware phrases, combined and lightly randomized, so
+repeated clicks give different results. No network call, no dependency, no
+cost.
+
+If you want it to call a real LLM instead, set `VITE_OPENAI_API_KEY` in a
+local `.env.local` file (already gitignored):
+
+```
+VITE_OPENAI_API_KEY=sk-...
+```
+
+**Only do this for local experimentation.** This is a static frontend with no
+backend, so any key baked into the build is bundled into the shipped
+JavaScript and visible to anyone who opens devtools — never put a real,
+billable key into an env var here and deploy it publicly. If the API call is
+unavailable for any reason (no key, network failure, timeout, rate limit), it
+silently falls back to the template generator — the button never leaves the
+user stuck.
 
 ## Notes
 

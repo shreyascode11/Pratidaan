@@ -216,16 +216,23 @@ export default function App() {
       {toast && (
         <div
           role="status"
-          className="animate-pop glow-ink fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-ink-900 px-4 py-4 text-white sm:left-auto sm:right-6 sm:mx-0"
+          // pointer-events-none on the container (and none on its passive
+          // children) keeps this purely informational — a toast sitting over
+          // live form controls, like the type toggle on "Post an Item", must
+          // never eat a click meant for what's underneath it. Only the
+          // explicit dismiss button opts back in.
+          className="animate-pop glow-ink pointer-events-none fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-ink-900 px-4 py-4 text-white sm:left-auto sm:right-6 sm:mx-0"
         >
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-mint-400">
+          <span className="pointer-events-none flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-mint-400">
             <CheckIcon className="h-3.5 w-3.5 text-mint-950" strokeWidth={2.6} />
           </span>
-          <p className="min-w-0 flex-1 truncate text-sm font-bold">{toast}</p>
+          <p className="pointer-events-none min-w-0 flex-1 truncate text-sm font-bold">
+            {toast}
+          </p>
           <button
             onClick={() => setToast(null)}
             aria-label="Dismiss"
-            className="shrink-0 rounded-full p-1 text-white/50 transition hover:bg-white/15 hover:text-white"
+            className="pointer-events-auto shrink-0 rounded-full p-1 text-white/50 transition hover:bg-white/15 hover:text-white"
           >
             <CloseIcon className="h-4 w-4" />
           </button>
